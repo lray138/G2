@@ -1,0 +1,8 @@
+<?php 
+
+use lray138\G2\Maybe;
+
+it('returns true for isSome when value is not null', function () {
+    $maybe = new Maybe(5);
+    expect($maybe->isSome())->toBeTrue();
+});
