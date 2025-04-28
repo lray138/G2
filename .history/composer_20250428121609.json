@@ -16,12 +16,7 @@
     "require": {
         "functional-php/fantasy-land": "^1"
     },
-    "require-dev": {
-        "pestphp/pest": "^3.8"
-    },
-    "config": {
-        "allow-plugins": {
-            "pestphp/pest-plugin": true
-        }
+    "scripts": {
+        "pest": "pest"
     }
 }
