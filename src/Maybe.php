@@ -2,7 +2,11 @@
 
 namespace lray138\G2;
 
-class Maybe
+abstract class Maybe
 {
     protected $value;
+
+    private function __construct($value)
+    {
+    }
 }

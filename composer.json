@@ -4,7 +4,7 @@
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Lray138\\G2\\": "src/"
+            "lray138\\G2\\": "src/"
         }
     },
     "authors": [
@@ -25,6 +25,8 @@
         }
     },
     "scripts": {
-        "test": "pest"
+        "pest": "pest",
+        "cs": "phpcs --standard=PSR12 src/",
+        "fix": "phpcbf --standard=PSR12"
     }
 }
