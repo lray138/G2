@@ -13,5 +13,7 @@
             "email": "57813289+lray138@users.noreply.github.com"
         }
     ],
-    "require": {}
+    "require": {
+        "functional-php/fantasy-land": "^1"
+    }
 }

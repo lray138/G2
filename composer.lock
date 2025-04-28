@@ -1,0 +1,67 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "20de9f350b581873237fef0df55a6a5e",
+    "packages": [
+        {
+            "name": "functional-php/fantasy-land",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/functional-php/fantasy-land.git",
+                "reference": "9a43201d827ced038ffd374f2d018d7a54ad33e2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/functional-php/fantasy-land/zipball/9a43201d827ced038ffd374f2d018d7a54ad33e2",
+                "reference": "9a43201d827ced038ffd374f2d018d7a54ad33e2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2",
+                "giorgiosironi/eris": "^0.9",
+                "phpunit/phpunit": "^5"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/FantasyLand/functions.php"
+                ],
+                "psr-4": {
+                    "FunctionalPHP\\": "./src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Gabriel Habryn",
+                    "email": "widmogrod+github@gmail.com"
+                }
+            ],
+            "description": "Specification for interoperability of common algebraic structures in PHP",
+            "support": {
+                "issues": "https://github.com/functional-php/fantasy-land/issues",
+                "source": "https://github.com/functional-php/fantasy-land/tree/1.0.2"
+            },
+            "time": "2024-12-18T16:28:32+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.6.0"
+}
