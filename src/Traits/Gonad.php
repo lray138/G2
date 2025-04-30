@@ -1,11 +1,10 @@
 <?php
 
-namespace lray138\G2\Maybe;
+namespace lray138\G2\Traits;
 
-use lray138\G2\Maybe;
-use FunctionalPHP\FantasyLand\Apply;
+use FunctionalPHP\FantasyLand\{Apply, Functor};
 
-class Just extends Maybe
+trait Gonad
 {
     protected $value;
 
@@ -23,7 +22,7 @@ class Just extends Maybe
 
     public function ap(Apply $val): Apply
     {
-        return $val->map($this->extract());
+        return $this->bind(fn($f) => $val->map($f));
     }
 
     public function bind(callable $f)
@@ -31,7 +30,7 @@ class Just extends Maybe
         return $f($this->extract());
     }
 
-    public function map(callable $f): Maybe
+    public function map(callable $f): Functor
     {
         return parent::of($f($this->extract()));
     }

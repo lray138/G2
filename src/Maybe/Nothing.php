@@ -40,6 +40,5 @@ class Nothing extends Maybe
 
     public function extract()
     {
-        return null;
     }
 }
