@@ -1,31 +1,42 @@
 <?php
 
 use lray138\G2\Maybe\Just;
-use lray138\G2\Maybe;
 
-// it('throws an error if the constructor is accessed directly', function () {
-//     // Trying to create a Just instance directly through the constructor should throw an error
-//     expect(function () {
-//         new Just(5);
-//     })->toThrow(Error::class);
-// });
+it('throws an error if the constructor is accessed directly', function () {
+    // Trying to create a Just instance directly through the constructor should throw an error
+    expect(function () {
+        new Just(5);
+    })->toThrow(Error::class);
+});
 
-// it('creates a Just instance with the given value', function () {
-//     $value = 5;
+describe('Just monad', function () {
+    $value = 5;
+    $f = fn($x) => $x + 1;
+    $g = fn($x) => $x * 2;
+    $unit = fn($x) => Just::of($x);
 
-//     // Create a Just instance using the `of` method
-//     $maybe = Just::of($value);
+    it('satisfies the Left Identity law', function () use ($value, $f, $unit) {
+        $result = $unit($value)->bind(fn($x) => $unit($f($x)));
+        expect($result->extract())->toBe($f($value));
+    });
 
-//     // Ensure that the instance is of the correct type
-//     expect($maybe)->toBeInstanceOf(Just::class);
+    it('satisfies the Right Identity law', function () use ($value, $unit) {
+        $m = $unit($value);
+        $result = $m->bind($unit);
+        expect($result->extract())->toBe($m->extract());
+    });
 
-//     // Ensure that the `Just` instance is a subclass of Maybe
-//     expect($maybe)->toBeInstanceOf(Maybe::class);
+    it('satisfies the Associativity law', function () use ($value, $unit, $f, $g) {
+        $m = $unit($value);
+        $fM = fn($x) => $unit($f($x));
+        $gM = fn($x) => $unit($g($x));
 
-//     expect($maybe->extract())->toBe(5);
-//     // Ensure the value is correctly assigned (assuming a getter method or direct access to `$value`)
-//     // expect($maybe->getValue())->toEqual($value);
-// });
+        $left = $m->bind($fM)->bind($gM);
+        $right = $m->bind(fn($x) => $fM($x)->bind($gM));
+
+        expect($left->extract())->toBe($right->extract());
+    });
+});
 
 // it('creates', function() {
 //     $t = Just::of;

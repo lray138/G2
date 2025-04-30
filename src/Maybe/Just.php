@@ -21,20 +21,23 @@ class Just extends Maybe
         return new static($value);
     }
 
-    public function ap(Apply $val): Apply {
+    public function ap(Apply $val): Apply
+    {
         return $val->map($this->extract());
     }
 
-    public function bind(callable $f) {
+    public function bind(callable $f)
+    {
         return $f($this->extract());
     }
 
-    public function map(callable $f): Maybe {
+    public function map(callable $f): Maybe
+    {
         return $this->bind($f)->extract();
     }
 
-    public function extract() {
+    public function extract()
+    {
         return $this->value;
     }
-
 }

@@ -25,8 +25,8 @@
         }
     },
     "scripts": {
-        "pest": "pest",
-        "cs": "phpcs --standard=PSR12 src/",
-        "fix": "phpcbf --standard=PSR12"
+        "test": "pest",
+        "lint": "phpcs --standard=phpcs.xml", 
+        "fix": "phpcbf --standard=phpcs.xml"
     }
 }
