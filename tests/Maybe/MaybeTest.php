@@ -9,4 +9,3 @@ it('throws an error if the constructor is accessed directly', function () {
         new Just(5);
     })->toThrow(Error::class);
 });
-
