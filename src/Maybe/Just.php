@@ -3,6 +3,7 @@
 namespace lray138\G2\Maybe;
 
 use lray138\G2\Maybe;
+use FunctionalPHP\FantasyLand\Apply;
 
 class Just extends Maybe
 {
@@ -20,8 +21,20 @@ class Just extends Maybe
         return new static($value);
     }
 
-    public function extract()
-    {
+    public function ap(Apply $val): Apply {
+        return $val->map($this->extract());
+    }
+
+    public function bind(callable $f) {
+        return $f($this->extract());
+    }
+
+    public function map(callable $f): Maybe {
+        return $this->bind($f)->extract();
+    }
+
+    public function extract() {
         return $this->value;
     }
+
 }

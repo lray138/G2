@@ -2,11 +2,9 @@
 
 namespace lray138\G2;
 
-abstract class Maybe
-{
-    protected $value;
+use \FunctionalPHP\FantasyLand\Monad;
 
-    private function __construct($value)
-    {
-    }
+abstract class Maybe implements Monad
+{
+
 }
