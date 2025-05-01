@@ -1,10 +1,10 @@
 <?php
 
-namespace lray138\G2\Traits;
+namespace lray138\G2\Common;
 
 use FunctionalPHP\FantasyLand\{Apply, Functor};
 
-trait Gonad
+trait GonadTrait
 {
     protected $value;
 

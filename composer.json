@@ -1,6 +1,6 @@
 {
     "name": "lray138/g2",
-    "description": "Functional Toolbox",
+    "description": "Functional Types / PHP Toolbox",
     "type": "library",
     "autoload": {
         "psr-4": {

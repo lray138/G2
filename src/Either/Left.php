@@ -3,9 +3,9 @@
 namespace lray138\G2\Either;
 
 use lray138\G2\Either;
-use FunctionalPHP\FantasyLand\Apply;
+use FunctionalPHP\FantasyLand\{Apply, Semigroup};
 
-final class Left extends Either
+final class Left extends Either implements Semigroup
 {
     private $value;
 
@@ -37,5 +37,10 @@ final class Left extends Either
     public function extract()
     {
         return $this->value;
+    }
+
+    public function concat(Semigroup $s): Semigroup
+    {
+        return $this;
     }
 }
