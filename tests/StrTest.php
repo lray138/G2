@@ -2,9 +2,8 @@
 
 use lray138\G2\Str;
 
-it('', function () {
+it('constructs properly', function () {
     $s = Str::of('string');
-
     expect($s->extract())->toBe('string');
 });
 

@@ -16,11 +16,8 @@ class Writer implements Monad
 
     public static function of($value, ?Monoid $log = null): Writer
     {
-        return new Writer(
-            function () use ($value): array {
-                return [$value, $log ?? Str::mempty()];
-            }
-        );
+        return new Writer(fn(): array
+            => [$value, $log ?? Str::mempty()]);
     }
 
     public function bind(callable $f): Writer
@@ -30,26 +27,13 @@ class Writer implements Monad
 
                 list($xs, $log1) = $this->run();
 
-                // adding this to end execution of script without needing
-                // the overhead of the example from ChatGPT
-
                 if (is_null($xs)) {
                     return [null, $log1];
                 }
 
                 list ($ys, $log2) = $f($xs)->run();
 
-                if (is_null($ys)) {
-                    if (is_string($log2) && is_string($log1)) {
-                        $log2 = $log2 . $log1;
-                    } else {
-                        $log2 = $log2->concat(ArrType::of(["Computation ended."]));
-                    }
-                }
-
-                $log = Str::mempty();
-
-                return [$ys, $log];
+                return [$ys, $log1->concat($log2)];
             }
         );
     }
@@ -64,9 +48,13 @@ class Writer implements Monad
         );
     }
 
-    public function ap(Apply $a): Apply
+    public function ap(Apply $that): Writer
     {
-        return $a;
+        return $this->bind(
+            function (callable $f) use ($that): Writer {
+                return $that->map($f);
+            }
+        );
     }
 
     public function run()

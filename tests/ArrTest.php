@@ -11,4 +11,3 @@ it('constructs correctly', function () {
     expect(Arr::of([])->extract())->toBe([]);
     expect(Arr::of(null))->toBeInstanceOf(Left::class);
 });
-
