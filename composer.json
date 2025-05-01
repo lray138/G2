@@ -14,7 +14,8 @@
         }
     ],
     "require": {
-        "functional-php/fantasy-land": "^1"
+        "functional-php/fantasy-land": "^1",
+        "guzzlehttp/guzzle": "^7.9"
     },
     "require-dev": {
         "pestphp/pest": "^3.8"

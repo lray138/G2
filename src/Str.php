@@ -33,6 +33,16 @@ class Str implements Monoid
         return Either::left('Str::class concat expets a Str');
     }
 
+    public function map(callable $f): self
+    {
+        return new self($f($this->extract()));
+    }
+
+    public function bind(callable $f)
+    {
+        return $f($this->extract());
+    }
+
     public function get()
     {
         return $this->extract();

@@ -52,4 +52,29 @@ class Arr implements Monoid
     {
         return $this->value;
     }
+
+	public function prop($key) {
+		if(is_object($key) && method_exists($key, "extract")) {
+			$key = $key->extract();
+		}
+
+        return isset($this->extract()[$key])
+            ? Either::right($this->extract()[$key])
+            : Either::left("prop '$key' not found");
+
+		// // probably need to dertimine, I think pluck is more
+		// // approprpiate
+		// $value = Arr\get($key, $this->value);
+		
+		// // wrap type if not an object
+		// // if(!is_object($value)) {
+       	// // 	$value = T\wrapType($value);
+       	// // }
+
+       	// $value = T\wrapType($value);
+
+		// return is_null($value) || T\isNothing($value)
+		// 	? Either::left("prop '$key' not found")
+		// 	: $value;
+	}
 }
