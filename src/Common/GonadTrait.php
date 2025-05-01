@@ -39,4 +39,9 @@ trait GonadTrait
     {
         return $this->value;
     }
+
+    public function get()
+    {
+        return $this->extract();
+    }
 }

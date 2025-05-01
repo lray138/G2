@@ -1,11 +1,11 @@
-<?php 
+<?php
 
 namespace lray138\G2;
 
 use lray138\G2\Arr;
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise\PromiseInterface;
-use \FunctionalPHP\FantasyLand\{Apply, Monad};
+use FunctionalPHP\FantasyLand\{Apply, Monad};
 
 class Task implements Monad
 {
@@ -16,7 +16,8 @@ class Task implements Monad
         $this->action = $action;
     }
 
-    public function ap(Apply $a): self {
+    public function ap(Apply $a): self
+    {
         return $this->bind(fn($f) => $a->map($f));
     }
 
@@ -68,7 +69,8 @@ class Task implements Monad
         });
     }
 
-    public function decodeJson() {
+    public function decodeJson()
+    {
         return $this->map(fn($resp) => Arr::of(json_decode($resp->getBody(), true)));
     }
 
@@ -80,9 +82,9 @@ class Task implements Monad
     }
 
     // at first this was returning a #PromiseInterface then a \GuzzleHttp\Psr7\Response
-    public function run() {   
+    public function run()
+    {
         $out = ($this->action)()->wait();
         return $out;
     }
-
 }
