@@ -2,7 +2,7 @@
 
 namespace lray138\G2;
 
-use FunctionalPHP\FantasyLand\{Apply, Monad, Functor};
+use FunctionalPHP\FantasyLand\{Apply, Monad};
 
 class IO implements Monad
 {
