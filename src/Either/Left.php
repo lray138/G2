@@ -44,7 +44,8 @@ final class Left extends Either implements Semigroup
         return $this;
     }
 
-    public function either(callable $f, $_) {
+    public function either(callable $f, $_)
+    {
         return $f();
     }
 }
