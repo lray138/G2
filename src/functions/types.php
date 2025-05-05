@@ -4,78 +4,29 @@ namespace lray138\G2\Types;
 
 use function lray138\GAS\dump;
 
-/* was named Types, but want that for the folder
-code from/based on Typed PHP by Christopher Pitt
-*/
-
-/**
- * @param mixed $variable
- * @return bool
- */
-function isNumber($variable)
+function isNumber($variable): bool
 {
-    return is_integer($variable) or is_float($variable);
+    return is_integer($variable) || is_float($variable);
 }
 
-/**
- * @param mixed $variable
- * @return bool
- */
-function isBoolean($variable)
+function isBoolean($variable): bool
 {
     return is_bool($variable);
 }
 
-/**
- * @param mixed $variable
- * @return bool
- */
 function isNull($variable)
 {
-    return is_null($variable) || isNothing($variable);
+    return is_null($variable) || $variable instanceof \lray138\G2\Maybe\Nothing
+        || $variable instanceof \lray138\G2\Either\Left;
 }
 
-function isType($variable)
-{
-     return $variable instanceof \lray138\GAS\Types\Type;
-}
-
-function isError($variable)
-{
-     return $variable instanceof \lray138\GAS\Types\Error;
-}
-
-/**
- * @param mixed $variable
- *
- * @return bool
- */
-function isNothing($variable)
-{
-    return is_null($variable) || $variable instanceof \lray138\GAS\Types\None
-        || $variable instanceof \lray138\GAS\Types\Nothing;
-}
-
-const isNothing = __NAMESPACE__ . '\isNothing';
-
-/**
- * @param mixed $variable
- *
- * @return bool
- */
-function isObject($variable)
+function isObject($variable): bool
 {
     return is_object($variable) && !isFunction($variable);
 }
 
-/**
- * @param mixed $variable
- *
- * @return bool
- */
-function isFunction($var)
+function isFunction($var): bool
 {
-
     if ($var instanceof \Closure) {
         return true;
     }
@@ -89,21 +40,11 @@ function isFunction($var)
     //return is_callable($variable) and is_object($variable);
 }
 
-/**
- * @param mixed $variable
- *
- * @return bool
- */
 function isExpression($variable)
 {
     return isRegex($variable);
 }
 
-/**
- * @param mixed $variable
- *
- * @return bool
- */
 function isRegex($variable)
 {
     // Sun Apr 17 2020 @ 19:44 got error because of the order of these things
@@ -139,51 +80,28 @@ function isRegex($variable)
         return false;
     }
 
+    // wow... 2025-05-02 19:38:00
+
     $isNotFalse = @preg_match($variable, "") !== false;
     $hasNoError = preg_last_error() === PREG_NO_ERROR;
     return $isNotFalse and $hasNoError && $notVoidTag;
 }
 
-/**
- * @param mixed $variable
- *
- * @return bool
- */
 function isString($variable)
 {
     return is_string($variable) and !isExpression($variable);
 }
 
-/**
- * @param mixed $variable
- *
- * @return bool
- */
 function isResource($variable)
 {
     return is_resource($variable);
 }
 
-/**
- * @param mixed $variable
- *
- * @return bool
- */
 function isArray($variable)
 {
     return is_array($variable);
 }
 
-function isArr($variable)
-{
-    return is_a($variable, __NAMESPACE__ . '\ArrType');
-}
-
-/**
- * @param mixed $variable
- *
- * @return string
- */
 function getType($variable)
 {
     $functions = [
@@ -201,7 +119,7 @@ function getType($variable)
     $result = "unknown";
 
     foreach ($functions as $function => $type) {
-        $qualified = "lray138\\GAS\\Types\\{$function}";
+        $qualified = "lray138\\G2\\Types\\{$function}";
 
         if ($qualified($variable)) {
             $result = $type;
@@ -219,18 +137,27 @@ function wrap($variable)
 
 const wrap = __NAMESPACE__ . '\wrap';
 
-function wrapType($variable)
+function wrap($variable)
 {
-    // no need to wrap if it's already a type
-    if ($variable instanceof Type) {
-        return $variable;
-    }
-
     if (is_object($variable)) {
         if (
             in_array(get_class($variable), [
-            "lray138\GAS\Types\Dir",
-            "lray138\GAS\Types\File" // @refactor ?
+                "lray138\G2\Arr",
+                "lray138\G2\Boo",
+                "lray138\G2\Dir",
+                "lray138\G2\Either\Left",
+                "lray138\G2\Either\Right",
+                "lray138\G2\File",
+                "lray138\G2\IO",
+                "lray138\G2\Maybe\Just",
+                "lray138\G2\Maybe\Nothing",
+                "lray138\G2\Num",
+                "lray138\G2\Reader",
+                "lray138\G2\State",
+                "lray138\G2\Str",
+                "lray138\G2\Task",
+                "lray138\G2\Time",
+                "lray138\G2\Writer"
             ])
         ) {
             return $variable;
@@ -243,9 +170,9 @@ function wrapType($variable)
         "number" => "Number",
         "boolean" => "Boolean",
         "null" => "Nothing", // changed from None
-        "expression" => "StrType",
-        "string" => "StrType", // was Str (it's StrType to avoid confusion with functions Str)
-        "array" => "ArrType"  // was Arr (same as above)
+        "expression" => "Str",
+        "string" => "Str", // was Str (it's StrType to avoid confusion with functions Str)
+        "array" => "Arr"  // was Arr (same as above)
     ];
 
     $type = getType($variable);

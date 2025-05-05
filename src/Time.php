@@ -2,7 +2,7 @@
 
 namespace lray138\G2;
 
-use lray138\G2\Arr;
+use lray138\G2\{Either, Str, IO};
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise\PromiseInterface;
 use FunctionalPHP\FantasyLand\{Apply, Monad, Functor};
@@ -49,14 +49,31 @@ class Time
         return new static(fn() => $f($this->run()));
     }
 
-    public function flatMap(callable $f): static
+    // public function bind(callable $f)
+    // {
+    //     return $f($this->run());
+    // }
+
+    // public function bind(callable $f): static
+    // {
+    //     return new static(function () use ($f) {
+    //         $result = $this->run();         // Lazily run the current monad
+    //         $bound = $f($result);           // Apply function (should return another monad)
+    //         return $bound instanceof self
+    //         ? $bound->run()             // Lazily extract from the returned monad
+    //         : $bound;                   // Fallback: raw value
+    //     });
+    // }
+
+
+    public function bind(callable $fn): self
     {
-        return $f($this->run());
+        return new static(fn() => $fn($this->run())); // Lazy binding
     }
 
     public function format(string $format): static
     {
-        return $this->map(fn(DateTime $dt) => $dt->format($format));
+        return $this->map(fn(DateTime $dt) => Str::of($dt->format($format)));
     }
 
     public function withTimeZone(\DateTimeZone $tz): static
@@ -69,8 +86,29 @@ class Time
         return $this->map(fn(DateTime $dt) => $dt->modify($modifier));
     }
 
+    // public function getDaysInMonthNum(): IO
+    // {
+    //     return $this->bind(fn($dt) => IO::of(fn() => Num::of($dt->format('t'))));
+    // }
+
+    public function getDaysInMonthNum()
+    {
+        // Lazily compute the number of days in the month
+        return $this->bind(fn($dt) => Num::of($dt->format('t')));
+    }
+
     public function run(): mixed
     {
         return ($this->action)();
+    }
+
+    public function extract(): mixed
+    {
+        return Either::left("Method 'extract' not available, use run");
+    }
+
+    public function get(): mixed
+    {
+        return Either::left("Method 'get' not available, use run");
     }
 }
