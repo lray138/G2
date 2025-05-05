@@ -1,33 +1,49 @@
-<?php
+<?php 
 
 namespace lray138\G2;
 
-use lray138\G2\{Either, Str, IO};
-use GuzzleHttp\Client;
-use GuzzleHttp\Promise\PromiseInterface;
-use FunctionalPHP\FantasyLand\{Apply, Monad, Functor};
 use DateTime;
+use DateTimeZone;
+use lray138\G2\{Either, Str, Num};
 
 class Time
 {
-    private \Closure $action;
+    private $value;
 
-    private function __construct(callable $action)
+    public function __construct(DateTime $value)
     {
-        $this->action = $action(...);
+        $this->value = $value;
     }
 
-    public static function now(?\DateTimeZone $tz = null): static
+    public function add(string|self $value)
     {
-        return new static(fn() => new \DateTime('now', $tz));
+        $copy = clone $this->value;
+    
+        if (is_string($value)) {
+            $copy->modify($value);
+            return new static($copy);
+        }
+    
+        if ($value instanceof self) {
+            $interval = $this->value->diff($value->value);
+            $copy->add($interval);
+            return new static($copy);
+        }
+    
+        return Either::left("add() expects a string or Time instance.");
     }
 
-    public static function of(DateTime|string $value, ?\DateTimeZone $tz = null): static
+    public static function now(?DateTimeZone $tz = null): static
     {
-        return new static(fn() => self::parse($value, $tz));
+        return new static(new DateTime('now', $tz));
     }
 
-    private static function parse(DateTime|string $value, ?\DateTimeZone $tz = null): DateTime
+    public static function of(DateTime|string $value, ?DateTimeZone $tz = null): static
+    {
+        return new static(self::parse($value, $tz));
+    }
+
+    private static function parse(DateTime|string $value, ?DateTimeZone $tz = null): DateTime
     {
         if ($value instanceof DateTime) {
             return $tz ? (clone $value)->setTimezone($tz) : clone $value;
@@ -35,80 +51,57 @@ class Time
 
         return match (true) {
             preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) =>
-                DateTime::createFromFormat('Y-m-d', $value, $tz),
+                DateTime::createFromFormat('Y-m-d', $value, $tz) ?: new DateTime($value, $tz),
             preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $value) =>
-                DateTime::createFromFormat('m/d/Y', $value, $tz),
+                DateTime::createFromFormat('m/d/Y', $value, $tz) ?: new DateTime($value, $tz),
             preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $value) =>
-                DateTime::createFromFormat('Y-m-d H:i:s', $value, $tz),
+                DateTime::createFromFormat('Y-m-d H:i:s', $value, $tz) ?: new DateTime($value, $tz),
             default => new DateTime($value, $tz),
         };
     }
 
     public function map(callable $f): static
     {
-        return new static(fn() => $f($this->run()));
+        return new static($f(clone $this->value));
     }
 
-    // public function bind(callable $f)
-    // {
-    //     return $f($this->run());
-    // }
-
-    // public function bind(callable $f): static
-    // {
-    //     return new static(function () use ($f) {
-    //         $result = $this->run();         // Lazily run the current monad
-    //         $bound = $f($result);           // Apply function (should return another monad)
-    //         return $bound instanceof self
-    //         ? $bound->run()             // Lazily extract from the returned monad
-    //         : $bound;                   // Fallback: raw value
-    //     });
-    // }
-
-
-    public function bind(callable $fn): self
+    public function bind(callable $f): mixed
     {
-        return new static(fn() => $fn($this->run())); // Lazy binding
+        return $f(clone $this->value);
     }
 
-    public function format(string $format): static
+    public function format(string $format): Str
     {
-        return $this->map(fn(DateTime $dt) => Str::of($dt->format($format)));
+        return Str::of($this->value->format($format));
     }
 
-    public function withTimeZone(\DateTimeZone $tz): static
+    public function withTimeZone(DateTimeZone $tz): static
     {
-        return $this->map(fn(DateTime $dt) => $dt->setTimezone($tz));
+        $copy = clone $this->value;
+        $copy->setTimezone($tz);
+        return new static($copy);
     }
 
     public function modify(string $modifier): static
     {
-        return $this->map(fn(DateTime $dt) => $dt->modify($modifier));
+        $copy = clone $this->value;
+        $copy->modify($modifier);
+        return new static($copy);
     }
 
-    // public function getDaysInMonthNum(): IO
-    // {
-    //     return $this->bind(fn($dt) => IO::of(fn() => Num::of($dt->format('t'))));
-    // }
-
-    public function getDaysInMonthNum()
+    public function getDaysInMonthNum(): Num
     {
-        // Lazily compute the number of days in the month
-        return $this->bind(fn($dt) => Num::of($dt->format('t')));
+        return Num::of((int) $this->value->format('t'));
     }
 
-    public function run(): mixed
+
+    public function extract(): DateTime
     {
-        return ($this->action)();
+        return $this->value;
     }
 
-    public function extract(): mixed
+    public function get(): DateTime
     {
-        return Either::left("Method 'extract' not available, use run");
-    }
-
-    public function get(): mixed
-    {
-        return Either::left("Method 'get' not available, use run");
+        return $this->extract();
     }
 }
