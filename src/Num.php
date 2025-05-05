@@ -3,7 +3,7 @@
 namespace lray138\G2;
 
 use FunctionalPHP\FantasyLand\{Monoid, Semigroup, Pointed};
-use lray138\G2\Either;
+use lray138\G2\Either\Left;
 
 class Num implements Monoid, Pointed
 {
@@ -19,7 +19,7 @@ class Num implements Monoid, Pointed
     public static function of($value)
     {
         if (!is_numeric($value)) {
-            return Either::left('Str::of expects a valid number');
+            return Either::left('Num::of expects a valid number');
         }
 
         if (is_string($value)) {
@@ -49,14 +49,117 @@ class Num implements Monoid, Pointed
     public function concat(Semigroup $n): Semigroup
     {
         if ($this->operation === 'add') {
-            return new self($this->extract() + $n->extract(), $this->operation);
+            return new self($this->value + $n->extract(), $this->operation);
         } elseif ($this->operation === 'mul') {
-            return new self($this->extract() * $n->extract(), $this->operation);
+            return new self($this->value * $n->extract(), $this->operation);
         }
 
-        throw new \Exception("Unknown operation"); // chatGPT
+        return Left::of("Unknown operation");
     }
 
+    // ───────────────────────────────
+    // Arithmetic
+    public function add($n): self
+    {
+        return new self($this->value + $n);
+    }
+    public function subtract($n): self
+    {
+        return new self($this->value - $n);
+    }
+    public function multiply($n): self
+    {
+        return new self($this->value * $n);
+    }
+    public function divide($n): self
+    {
+        return new self($this->value / $n);
+    }
+    public function mod($n): self
+    {
+        return new self($this->value % $n);
+    }
+    public function negate(): self
+    {
+        return new self(-$this->value);
+    }
+
+    // Rounding
+    public function round(int $precision = 0): self
+    {
+        return new self(round($this->value, $precision));
+    }
+    public function floor(): self
+    {
+        return new self(floor($this->value));
+    }
+    public function ceil(): self
+    {
+        return new self(ceil($this->value));
+    }
+    public function truncate(): self
+    {
+        return new self((int) $this->value);
+    }
+
+    // Comparison
+    public function equals($n): Boo
+    {
+        return Boo::of($this->value == $n);
+    }
+    public function greaterThan($n): Boo
+    {
+        return Boo::of($this->value > $n);
+    }
+    public function lessThan($n): Boo
+    {
+        return Boo::of($this->value < $n);
+    }
+    public function compareTo($n): self
+    {
+        return new self($this->value <=> $n);
+    }
+
+    // Utility
+    public function isInt(): Boo
+    {
+        return Boo::of(is_int($this->value));
+    }
+    public function isFloat(): Boo
+    {
+        return Boo::of(is_float($this->value));
+    }
+    public function isEven(): Boo
+    {
+        return Boo::of($this->value % 2 === 0);
+    }
+    public function isOdd(): Boo
+    {
+        return Boo::of($this->value % 2 !== 0);
+    }
+
+    public function clamp($min, $max): self
+    {
+        return new self(max($min, min($this->value, $max)));
+    }
+
+    public function inRange($min, $max): Boo
+    {
+        return Boo::of($this->value >= $min && $this->value <= $max);
+    }
+
+    // Conversion
+    public function toFloat(): self
+    {
+        return new self((float) $this->value);
+    }
+
+    public function toInt(): self
+    {
+        return new self((int) $this->value);
+    }
+
+    // Access
     public function get()
     {
         return $this->extract();

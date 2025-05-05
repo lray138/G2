@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace lray138\G2;
 
@@ -18,18 +18,18 @@ class Time
     public function add(string|self $value)
     {
         $copy = clone $this->value;
-    
+
         if (is_string($value)) {
             $copy->modify($value);
             return new static($copy);
         }
-    
+
         if ($value instanceof self) {
             $interval = $this->value->diff($value->value);
             $copy->add($interval);
             return new static($copy);
         }
-    
+
         return Either::left("add() expects a string or Time instance.");
     }
 
