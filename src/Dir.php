@@ -2,18 +2,22 @@
 
 namespace lray138\G2;
 
-use FunctionalPHP\FantasyLand\{Apply, Monad};
-use lray138\G2\Either\Left;
+use lray138\G2\{
+    Either\Left,
+    Arr,
+    Str,
+    Common\GonadTrait
+};
 
 class Dir
 {
-    protected $value;
+    use GonadTrait;
 
-    public function __construct(string $path)
+    protected string $path;
+
+    private function __construct(string $path)
     {
-        $this->value = Arr::of([
-            'path' => $path
-        ]);
+        $this->path = rtrim($path, DIRECTORY_SEPARATOR); // Normalize
     }
 
     public static function of(string $path)
@@ -25,40 +29,88 @@ class Dir
         return Left::of("Directory does not exist: $path");
     }
 
-    // Lazy load all children (both files and directories)
-    public function getChildren(): IO
+    public function getPath(): Str
     {
-        return new IO(fn()
-            => $this->extract()
-                ->prop('children')
-                ->either(
-                    fn() => Arr::of(scandir($this->extract()->prop('path')->extract())),
-                    fn($xs) => Arr::of($xs)
-                ));
+        return Str::of($this->path);
     }
 
-    // Get files by filtering children
-    public function getFiles(): IO
+    public function getChildren()
     {
-        return $this->getChildren()->map(function ($children) {
-            return array_filter($children, function ($item) {
-                return is_file($this->value['path'] . DIRECTORY_SEPARATOR . $item);
-            });
-        });
+        $children = scandir($this->path);
+
+        return $children === false
+            ? Left::of("Unable to read directory: {$this->path}")
+            : Arr::of(array_values(array_diff($children, ['.', '..'])));
     }
 
-    // Get directories by filtering children
-    public function getDirs(): IO
+    public function getFiles()
     {
-        return $this->getChildren()->map(function ($children) {
-            return array_filter($children, function ($item) {
-                return is_dir($this->value['path'] . DIRECTORY_SEPARATOR . $item) && $item != '.' && $item != '..';
-            });
-        });
+        $children = $this->getChildren();
+
+        return $children->map(fn($items) =>
+            array_filter($items, fn($item) =>
+                is_file($this->path . DIRECTORY_SEPARATOR . $item)));
     }
 
-    public function extract()
+    public function getDirs()
     {
-        return $this->value;
+        $children = $this->getChildren();
+
+        return $children->map(fn($items) =>
+            array_filter($items, fn($item) =>
+                is_dir($this->path . DIRECTORY_SEPARATOR . $item)));
+    }
+
+    public function getTree(): Arr
+    {
+        $descendants = [];
+
+        // Recursive function to traverse through directories
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($this->path, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::SELF_FIRST
+        );
+
+        foreach ($iterator as $fileinfo) {
+            $descendants[] = $fileinfo->getRealPath();
+        }
+
+        return Arr::of($descendants);
+    }
+
+    public function getDirsRecursive(): Arr
+    {
+        $dirs = [];
+
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($this->path, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::SELF_FIRST
+        );
+
+        foreach ($iterator as $fileinfo) {
+            if ($fileinfo->isDir()) {
+                $dirs[] = $fileinfo->getRealPath();
+            }
+        }
+
+        return Arr::of($dirs);
+    }
+
+    public function getFilesRecursive(): Arr
+    {
+        $files = [];
+
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($this->path, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::SELF_FIRST
+        );
+
+        foreach ($iterator as $fileinfo) {
+            if ($fileinfo->isFile()) {
+                $files[] = $fileinfo->getRealPath();
+            }
+        }
+
+        return Arr::of($files);
     }
 }

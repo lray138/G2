@@ -5,29 +5,17 @@ use lray138\G2\{
     Either\Left
 };
 
-
 it('constructs correctly', function() {
     expect(Dir::of('/Users/lray/Sites/'))->toBeInstanceOf(Dir::class);
     expect(Dir::of('/Users/noray/Sites/'))->toBeInstanceOf(Left::class);
 });
 
-
 it('loads children lazily when accessed for the first time', function() {
     $dir = Dir::of('/Users/lray/Sites/demo-dir')
         ->getChildren()
-        ->run();
+        ->extract();
 
-    expect($dir->extract())->toEqual(['.', '..', 'file1.txt', 'file2.txt']);
-
-    // // Call getChildren and check the results
-    // $children = $this->dir->getChildren()->run();
-    // expect($children)->toBeInstanceOf(Right::class);
-    // expect($children->getValue())->toEqual(['file1.txt', 'file2.txt']);  // Check the expected children
-
-    // // The second call should return the cached value
-    // $cachedChildren = $this->dir->getChildren()->run();
-    // expect($cachedChildren)->toBeInstanceOf(Right::class);
-    // expect($cachedChildren->getValue())->toEqual(['file1.txt', 'file2.txt']); // Should return the cached result
+    expect($dir)->toEqual(['file1.txt', 'file2.txt']);
 });
 
 // it('returns an error if the directory does not exist', function() {

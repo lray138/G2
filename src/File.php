@@ -2,18 +2,19 @@
 
 namespace lray138\G2;
 
-use FunctionalPHP\FantasyLand\{Apply, Monad};
-use lray138\G2\Either\Left;
+use lray138\G2\{
+    Either\Left,
+    Num,
+    Common\Gonad
+};
 
 class File
 {
-    protected $value;
+    protected string $path;
 
     private function __construct(string $path)
     {
-        $this->value = Arr::of([
-            'path' => $path
-        ]);
+        $this->path = $path;
     }
 
     public static function of(string $path)
@@ -25,27 +26,29 @@ class File
         return Left::of("File does not exist: $path");
     }
 
-    // Get the size of the file
-    public function getSize(): IO
+    public function getPath(): Str
     {
-        return new IO(fn() => filesize($this->extract()->prop('path')->extract()));
+        return Str::of($this->path);
     }
 
-    // Get the file extension
-    public function getExtension(): IO
+    public function getSize()
     {
-        return new IO(fn() => pathinfo($this->extract()->prop('path')->extract(), PATHINFO_EXTENSION));
+        $size = filesize($this->path);
+        return $size === false
+            ? Left::of('good error message')
+            : Num::of($size);
     }
 
-    // Read the contents of the file
-    public function read(): IO
+    public function getExtension(): Str
     {
-        return new IO(fn() => file_get_contents($this->extract()->prop('path')->extract()));
+        return Str::of(pathinfo($this->path, PATHINFO_EXTENSION));
     }
 
-    // Extract the internal value (path)
-    public function extract()
+    public function getContents()
     {
-        return $this->value;
+        $c = file_get_contents($this->path);
+        return $c === false
+            ? Left::of('good error message')
+            : Str::of($c);
     }
 }
