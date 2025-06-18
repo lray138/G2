@@ -2,7 +2,7 @@
 
 namespace lray138\G2;
 
-use FunctionalPHP\FantasyLand\{Semigroup, Monad};
+use FunctionalPHP\FantasyLand\{Monad};
 use lray138\G2\Either\{Left, Right};
 
 abstract class Either implements Monad

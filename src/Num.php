@@ -169,4 +169,8 @@ class Num implements Monoid, Pointed
     {
         return $this->value;
     }
+
+    public function __toString() {
+        return (string) $this->extract();
+    }
 }

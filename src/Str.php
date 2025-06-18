@@ -2,10 +2,10 @@
 
 namespace lray138\G2;
 
-use FunctionalPHP\FantasyLand\{Monoid, Semigroup};
+use FunctionalPHP\FantasyLand\{Monoid, Semigroup, Pointed};
 use lray138\G2\Either;
 
-class Str implements Monoid
+class Str implements Monoid, Pointed
 {
     private $value;
 
@@ -51,5 +51,9 @@ class Str implements Monoid
     public function extract()
     {
         return $this->value;
+    }
+
+    public function __toString() {
+        return $this->extract();
     }
 }

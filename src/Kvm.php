@@ -5,7 +5,7 @@ namespace lray138\G2;
 use FunctionalPHP\FantasyLand\{Monoid, Semigroup};
 use lray138\G2\Either;
 
-class Arr implements Monoid
+class Kvm implements Monoid
 {
     private $value;
 
@@ -18,6 +18,10 @@ class Arr implements Monoid
     {
         if (is_null($data)) {
             return Either::left("Arr::class requires a valid value");
+        }
+
+        if(array_keys($data) == range(0, count($data) - 1)) {
+            return Either::left("Dct constructor expects an associative array");
         }
 
         if (!is_array($data) && is_iterable($data)) {
