@@ -59,9 +59,9 @@ class Kvm implements Monoid
 
     public function prop($key)
     {
-        if (is_object($key) && method_exists($key, "extract")) {
-            $key = $key->extract();
-        }
+        // if (is_object($key) && method_exists($key, "extract")) {
+        //     $key = $key->extract();
+        // }
 
         return isset($this->extract()[$key])
             ? Either::right($this->extract()[$key])

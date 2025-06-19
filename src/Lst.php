@@ -44,11 +44,16 @@ class Lst implements Monoid
 
     public function concat(Semigroup $a): Semigroup
     {
-        if ($s instanceof self) {
+        if ($a instanceof self) {
             return new static(array_merge($this->extract(), $a->extract()));
         }
 
         return Either::left('Arr::class concat expects Str');
+    }
+
+    public function map(callable $fn): self
+    {
+        return new static(array_map($fn, $this->value));
     }
 
     public function get()
@@ -61,14 +66,4 @@ class Lst implements Monoid
         return $this->value;
     }
 
-    public function prop($key)
-    {
-        if (is_object($key) && method_exists($key, "extract")) {
-            $key = $key->extract();
-        }
-
-        return isset($this->extract()[$key])
-            ? Either::right($this->extract()[$key])
-            : Either::left("prop '$key' not found");
-    }
 }

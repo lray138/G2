@@ -4,7 +4,7 @@ namespace lray138\G2;
 
 use lray138\G2\{
     Either\Left,
-    Arr,
+    Lst,
     Str,
     Common\GonadTrait
 };
@@ -34,20 +34,27 @@ class Dir
         return Str::of($this->path);
     }
 
-    public function getChildren()
+    public function getChildren(): Lst
     {
         $children = scandir($this->path);
 
         return $children === false
             ? Left::of("Unable to read directory: {$this->path}")
-            : Arr::of(array_values(array_diff($children, ['.', '..'])));
+            : Lst::of(
+                array_map(
+                    fn($s) => Str::of($s),
+                    array_values(
+                        array_diff($children, ['.', '..'])
+                    )
+                )
+            );
     }
 
-    public function getFiles()
+    public function getFiles(): Lst
     {
         $children = $this->getChildren();
 
-        return $children->map(fn($items) =>
+        return $children->map(fn(Str $items) =>
             array_filter($items, fn($item) =>
                 is_file($this->path . DIRECTORY_SEPARATOR . $item)));
     }
@@ -75,7 +82,7 @@ class Dir
             $descendants[] = $fileinfo->getRealPath();
         }
 
-        return Arr::of($descendants);
+        return Lst::of($descendants);
     }
 
     public function getDirsRecursive(): Arr
@@ -93,7 +100,7 @@ class Dir
             }
         }
 
-        return Arr::of($dirs);
+        return Lst::of($dirs);
     }
 
     public function getFilesRecursive(): Arr
@@ -111,6 +118,6 @@ class Dir
             }
         }
 
-        return Arr::of($files);
+        return Lst::of($files);
     }
 }

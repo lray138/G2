@@ -5,14 +5,14 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Promise\Promise;
 
 use lray138\G2\Task;
-use lray138\G2\Arr;
+use lray138\G2\Kvm;
 
 use GuzzleHttp\Promise\Create;
 
 it('Task::get retrieves a post', function () {
     $task = Task::get('https://jsonplaceholder.typicode.com/posts/1')
         ->decodeJson()
-        ->map(fn(Arr $arr) => $arr->prop('id')->extract());
+        ->map(fn(Kvm $Kvm) => $Kvm->prop('id')->extract());
 
     expect($task->run())->toBe(1);
 });
@@ -26,7 +26,7 @@ it('Task::post creates a new post (simulated)', function () {
 
     $task = Task::post('https://jsonplaceholder.typicode.com/posts', $data)
         ->decodeJson()
-        ->map(fn(Arr $arr) => $arr->prop('title')->get());
+        ->map(fn(Kvm $Kvm) => $Kvm->prop('title')->get());
 
     expect($task->run())->toBe('foo');
 });
@@ -43,7 +43,7 @@ it('Task::put updates a post (simulated)', function () {
         'json' => $data
     ])
         ->decodeJson()
-        ->map(fn(Arr $arr) => $arr->prop('title')->get());
+        ->map(fn(Kvm $Kvm) => $Kvm->prop('title')->get());
 
     expect($task->run())->toBe('updated');
 });
@@ -53,7 +53,7 @@ it('Task::patch partially updates a post (simulated)', function () {
         'json' => ['title' => 'patched']
     ])
         ->decodeJson()
-        ->map(fn(Arr $arr) => $arr->prop('title')->get());
+        ->map(fn(Kvm $Kvm) => $Kvm->prop('title')->get());
 
     expect($task->run())->toBe('patched');
 });

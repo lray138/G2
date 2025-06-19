@@ -16,3 +16,17 @@ describe('Pointed', function () {
     });
 
 });
+
+describe('Functor', function() {
+
+    it('map applies function to each element', function () {
+        $list = Lst::of([1, 2, 3]);
+        $mapped = $list->map(fn($x) => $x * 2);
+
+        expect($mapped)->toBeInstanceOf(Lst::class)
+                    ->and($mapped->extract())->toEqual([2, 4, 6])
+                    ->and($list->extract())->toEqual([1, 2, 3]); // original unchanged
+    });
+
+});
+

@@ -2,7 +2,7 @@
 
 namespace lray138\G2;
 
-use lray138\G2\Arr;
+use lray138\G2\Kvm;
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise\PromiseInterface;
 use FunctionalPHP\FantasyLand\{Apply, Monad};
@@ -71,7 +71,7 @@ class Task implements Monad
 
     public function decodeJson()
     {
-        return $this->map(fn($resp) => Arr::of(json_decode($resp->getBody(), true)));
+        return $this->map(fn($resp) => Kvm::of(json_decode($resp->getBody(), true)));
     }
 
     public function fork(callable $onReject, callable $onResolve)
