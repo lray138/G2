@@ -67,4 +67,47 @@ class Kvm implements Monoid
             ? Either::right($this->extract()[$key])
             : Either::left("prop '$key' not found");
     }
+
+    public function map(callable $fn): self
+    {
+        $mapped = [];
+        foreach ($this->value as $key => $value) {
+            $mapped[$key] = $fn($value, $key);
+        }
+        return new static($mapped);
+    }
+
+public function bind(callable $fn): self
+{
+    $bound = [];
+    foreach ($this->value as $key => $value) {
+        $result = $fn($value, $key);
+        if (!$result instanceof self) {
+            throw new \RuntimeException("Bind callback must return Kvm");
+        }
+        $bound[$key] = $result;
+    }
+    return new static($bound);
+}
+
+    public function filter(callable $fn): self
+    {
+        $result = [];
+        foreach ($this->value as $key => $value) {
+            if ($fn($value, $key)) {
+                $result[$key] = $value;
+            }
+        }
+        return new static($result);
+    }
+
+    public function reduce(callable $fn, $initial)
+    {
+        $acc = $initial;
+        foreach ($this->value as $key => $value) {
+            $acc = $fn($acc, $value, $key);
+        }
+        return $acc;
+    }
+
 }

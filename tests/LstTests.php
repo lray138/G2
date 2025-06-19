@@ -15,5 +15,3 @@ require "Lst/head.php";
 require "Lst/tail.php";
 require "Lst/filter.php";
 require "Lst/reduce.php";
-
-

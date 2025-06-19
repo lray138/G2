@@ -1,12 +1,9 @@
 <?php 
 
-use lray138\G2\{
-    Either\Left,
-    Kvm
-};
+use lray138\G2\Kvm;
+use lray138\G2\Either\Left;
 
-
-it('constructs properly', function () use ($demo_dir_path) {
+it('constructs properly', function () {
         
     expect(Kvm::of(['a' => 0]))->toBeInstanceOf(Kvm::class);
     expect(Kvm::of(['a']))->toBeInstanceOf(Left::class);
@@ -18,4 +15,3 @@ it('constructs properly', function () use ($demo_dir_path) {
         // )->toBe(true);
 
 });
-

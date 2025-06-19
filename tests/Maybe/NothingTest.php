@@ -39,4 +39,5 @@ describe('Nothing monad', function () {
         expect($left->extract())->toBeNull();
         expect($right->extract())->toBeNull();
     });
+    
 });
