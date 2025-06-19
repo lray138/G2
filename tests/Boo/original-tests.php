@@ -1,5 +1,7 @@
 <?php 
 
+use lray138\G2\Boo;
+
 it('satisfies the Left Identity law for Boo', function () {
     $value = true;
     $f = fn($x) => Boo::of(!$x);
