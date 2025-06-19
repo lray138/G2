@@ -29,11 +29,13 @@ class Num implements Monoid, Pointed
         return new static($value);
     }
 
+    // 
     public static function prod($value = 1)
     {
         return new static($value, "mul");
     }
 
+    // wow, I wonder what tangent I was on when this was added ;)
     public static function sum($value = 0)
     {
         return new static($value, "add");
@@ -61,23 +63,27 @@ class Num implements Monoid, Pointed
     // Arithmetic
     public function add($n): self
     {
-        return new self($this->value + $n);
+        return new self($this->value + unwrap($n));
     }
     public function subtract($n): self
     {
-        return new self($this->value - $n);
+        return new self($this->value - unwrap($n));
+    }
+    public function sub($n): self
+    {
+        return $this->subtract($n);
     }
     public function multiply($n): self
     {
-        return new self($this->value * $n);
+        return new self($this->value * unwrap($n));
     }
     public function divide($n): self
     {
-        return new self($this->value / $n);
+        return new self($this->value / unwrap($n));
     }
     public function mod($n): self
     {
-        return new self($this->value % $n);
+        return new self($this->value % unwrap($n));
     }
     public function negate(): self
     {
@@ -105,19 +111,19 @@ class Num implements Monoid, Pointed
     // Comparison
     public function equals($n): Boo
     {
-        return Boo::of($this->value == $n);
+        return Boo::of($this->value == unwrap($n));
     }
     public function greaterThan($n): Boo
     {
-        return Boo::of($this->value > $n);
+        return Boo::of($this->value > unwrap($n));
     }
     public function lessThan($n): Boo
     {
-        return Boo::of($this->value < $n);
+        return Boo::of($this->value < unwrap($n));
     }
     public function compareTo($n): self
     {
-        return new self($this->value <=> $n);
+        return new self($this->value <=> unwrap($n));
     }
 
     // Utility

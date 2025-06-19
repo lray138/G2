@@ -44,3 +44,13 @@ function dump()
 
     return $args[0];
 }
+
+function wrap() {
+
+}
+
+function unwrap($var) {
+    return (is_object($var) && method_exists($var, "extract")) 
+        ? $var->extract()
+        : $var;
+}
