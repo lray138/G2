@@ -42,6 +42,53 @@ class Lst implements Monoid
         return new static([]);
     }
 
+    public function map(callable $fn): self
+    {
+        return new static(array_map($fn, $this->value));
+    }
+
+    public function bind(callable $fn): self
+    {
+        $results = array_map($fn, $this->value); // results in array of Lst
+        $flattened = [];
+
+        foreach ($results as $item) {
+            if ($item instanceof self) {
+                $flattened = array_merge($flattened, $item->extract());
+            } else {
+                // Defensive: if bind didn't return Lst, you could throw or wrap
+                $flattened[] = $item;
+            }
+        }
+
+        return new static($flattened);
+    }
+
+    public function head(): Either
+    {
+        return isset($this->value[0])
+            ? Either::right($this->value[0])
+            : Either::left("Lst::head() failed — list is empty");
+    }
+
+    public function tail(): self
+    {
+        return new static(array_slice($this->value, 1));
+    }
+
+    public function filter(callable $predicate): self
+    {
+        return new static(array_values(
+                array_filter($this->value, $predicate)
+            )
+        );
+    }
+
+    public function reduce(callable $fn, $initial)
+    {
+        return array_reduce($this->value, $fn, $initial);
+    }
+
     public function concat(Semigroup $a): Semigroup
     {
         if ($a instanceof self) {
@@ -49,11 +96,6 @@ class Lst implements Monoid
         }
 
         return Either::left('Arr::class concat expects Str');
-    }
-
-    public function map(callable $fn): self
-    {
-        return new static(array_map($fn, $this->value));
     }
 
     public function get()
