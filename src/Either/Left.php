@@ -48,4 +48,8 @@ final class Left extends Either implements Semigroup
     {
         return $f();
     }
+
+    public function __call($method, $args) {
+        return $this;
+    }
 }

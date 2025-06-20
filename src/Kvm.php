@@ -4,6 +4,7 @@ namespace lray138\G2;
 
 use FunctionalPHP\FantasyLand\{Monoid, Semigroup};
 use lray138\G2\Either;
+use lray138\G2\Common\GetPropTrait;
 
 class Kvm implements Monoid
 {
@@ -57,16 +58,7 @@ class Kvm implements Monoid
         return $this->value;
     }
 
-    public function prop($key)
-    {
-        // if (is_object($key) && method_exists($key, "extract")) {
-        //     $key = $key->extract();
-        // }
-
-        return isset($this->extract()[$key])
-            ? Either::right($this->extract()[$key])
-            : Either::left("prop '$key' not found");
-    }
+    use GetPropTrait;
 
     public function map(callable $fn): self
     {

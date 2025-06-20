@@ -6,7 +6,7 @@ use lray138\G2\Either;
 it('returns Either::right when head is called on non-empty list', function () {
     $lst = Lst::of(['a', 'b', 'c']);
 
-    $head = $lst->head();
+    $head = $lst->head()->get();
 
     expect($head->extract())->toBe('a');
 });

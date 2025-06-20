@@ -33,13 +33,49 @@ class Str implements Monoid, Pointed
         return Either::left('Str::class concat expets a Str');
     }
 
+    public function replace($search, $replace) {
+
+		$search = unwrap($search);
+        $replace = unwrap($replace);
+
+		return $this->map(fn($subject) 
+            => str_replace($search, $replace, $subject)
+        );
+	}
+
+    public function append($value) {
+        return $this->map(fn(string $s) 
+            => $s . unwrap($value)
+        );
+    }
+
     public function map(callable $f): self
     {
+        $result = $f($this->extract());
+        
+        if (!is_string($result)) {
+            throw new \RuntimeException("Lst::map must return an array wrapped in Lst");
+        }
+
         return new self($f($this->extract()));
     }
 
-    public function bind(callable $f)
+    public function bind(callable $f): static
     {
+        $result = $f($this->extract());
+
+        if (!($result instanceof static)) {
+            throw new \LogicException(sprintf(
+                'bind() must return an instance of %s, got %s',
+                static::class,
+                is_object($result) ? get_class($result) : gettype($result)
+            ));
+        }
+
+        return $result;
+    }
+
+    public function bindTo(callable $f) {
         return $f($this->extract());
     }
 
@@ -52,6 +88,8 @@ class Str implements Monoid, Pointed
     {
         return $this->value;
     }
+
+    use \lray138\G2\Common\ExtendTrait;
 
     public function __toString() {
         return $this->extract();

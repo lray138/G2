@@ -26,7 +26,6 @@ it('gets files correctly', function() {
     expect($dir)->toEqual(['file1.txt', 'file2.txt']);
 });
 
-
 // it('returns an error if the directory does not exist', function() {
 //     // Simulate a non-existing directory
 //     $dirResult = Dir::of('invalid/path');

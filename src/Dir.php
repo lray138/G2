@@ -116,4 +116,6 @@ class Dir
 
         return Lst::of($files);
     }
+
+    use \lray138\G2\Common\ExtendTrait;
 }

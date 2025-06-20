@@ -18,7 +18,7 @@ trait GetPropTrait
         $key = unwrap($key);
 
         return isset($stored[$key])
-            ? wrap($stored[$key])
+            ? Either::right(wrap($stored[$key]))
             : Either::left("prop '$key' not found");
     }
 }

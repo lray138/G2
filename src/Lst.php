@@ -4,6 +4,7 @@ namespace lray138\G2;
 
 use FunctionalPHP\FantasyLand\{Monoid, Semigroup};
 use lray138\G2\Either;
+use lray138\G2\Common\Tappable;
 
 class Lst implements Monoid
 {
@@ -42,6 +43,8 @@ class Lst implements Monoid
         return new static([]);
     }
 
+    use Tappable;
+
     public function map(callable $fn): self
     {
         return new static(array_map($fn, $this->value));
@@ -64,10 +67,17 @@ class Lst implements Monoid
         return new static($flattened);
     }
 
-    public function head(): Either
+    public function head()
     {
-        return isset($this->value[0])
-            ? Either::right($this->value[0])
+        if (empty($this->extract())) {
+            return Either::left("Lst::head() failed — list is empty");
+        }
+
+        // reset() returns the first element value, or false if empty
+        $first = reset($this->value);
+
+        return $first !== false
+            ? wrap($first)
             : Either::left("Lst::head() failed — list is empty");
     }
 
@@ -106,6 +116,24 @@ class Lst implements Monoid
     public function extract()
     {
         return $this->value;
+    }
+
+    public function nth(int $index)
+    {
+        if ($index < 0) {
+            return Left::of("Index must be non-negative");
+        }
+
+        if ($this->isEmpty()) {
+            return Left::of("Index {$index} out of bounds");
+        }
+
+        if ($index === 0) {
+            // head() returns Either, so just return it directly
+            return $this->head();
+        }
+
+        return $this->tail()->nth($index - 1);
     }
 
 }
