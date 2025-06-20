@@ -130,10 +130,10 @@ function getType($variable)
     return $result;
 }
 
-function wrap($variable)
-{
-    return wrapType($variable);
-}
+// function wrap($variable)
+// {
+//     return wrapType($variable);
+// }
 
 const wrap = __NAMESPACE__ . '\wrap';
 
@@ -142,7 +142,8 @@ function wrap($variable)
     if (is_object($variable)) {
         if (
             in_array(get_class($variable), [
-                "lray138\G2\Arr",
+                "lray138\G2\Kvm",
+                "lray138\G2\Lst",
                 "lray138\G2\Boo",
                 "lray138\G2\Dir",
                 "lray138\G2\Either\Left",
@@ -167,12 +168,12 @@ function wrap($variable)
     $result = "Error";
 
     $types = [
-        "number" => "Number",
-        "boolean" => "Boolean",
-        "null" => "Nothing", // changed from None
+        "number" => "Num",
+        "boolean" => "Boo",
+        "null" => "Maybe\\Nothing", // changed from None
         "expression" => "Str",
         "string" => "Str", // was Str (it's StrType to avoid confusion with functions Str)
-        "array" => "Arr"  // was Arr (same as above)
+        "array" => "array"
     ];
 
     $type = getType($variable);
@@ -190,7 +191,7 @@ function wrap($variable)
 
         // this is not right
         //return call_user_func("\\lray138\\GAS\\Types\\" . $result . "::of", $class);
-        return \lray138\GAS\Types\Either\Right::of($variable);
+        return \lray138\G2\Either\Right::of($variable);
     }
 
     if (isset($types[$type])) {
@@ -199,119 +200,127 @@ function wrap($variable)
         $variable = "Type for value '" . $variable . "' can not be determined";
     }
 
-    return call_user_func("\\lray138\\GAS\\Types\\" . $result . "::of", $variable);
+    if($type == "array") {
+        return array_keys($variable) !== range(0, count($variable) - 1)
+            ? \lray138\G2\Kvm::of($variable)
+            : \lray138\G2\Lst::of($variable);
+    }
+
+    return call_user_func("\\lray138\\G2\\" . $result . "::of", $variable);
 }
 
 const wrapType = __NAMESPACE__ . '\wrapType';
 
-function Arr($value = [])
-{
-    return ArrType::of($value);
-}
+// leaving a comment out for discussion purposes 
 
-const Arr = __NAMESPACE__ . '\Arr';
+// function Arr($value = [])
+// {
+//     return ArrType::of($value);
+// }
 
-function Many($value = null)
-{
-    return Many::of($value);
-}
+// const Arr = __NAMESPACE__ . '\Arr';
 
-const Many = __NAMESPACE__ . '\Many';
+// function Many($value = null)
+// {
+//     return Many::of($value);
+// }
 
-function Maybe($value = null)
-{
-    return Maybe::of($value);
-}
+// const Many = __NAMESPACE__ . '\Many';
 
-const Maybe = __NAMESPACE__ . '\Maybe';
+// function Maybe($value = null)
+// {
+//     return Maybe::of($value);
+// }
 
-function Some($value)
-{
-    return Some::of($value);
-}
+// const Maybe = __NAMESPACE__ . '\Maybe';
 
-const Some = __NAMESPACE__ . '\Some';
+// function Some($value)
+// {
+//     return Some::of($value);
+// }
 
-function Str($value = "")
-{
-    return StrType::of($value);
-}
+// const Some = __NAMESPACE__ . '\Some';
 
-const Str = __NAMESPACE__ . '\Str';
+// function Str($value = "")
+// {
+//     return StrType::of($value);
+// }
 
-function None()
-{
-    return None::of();
-}
+// const Str = __NAMESPACE__ . '\Str';
 
-const None = __NAMESPACE__ . '\None';
+// function None()
+// {
+//     return None::of();
+// }
 
-function Nothing()
-{
-    return Nothing::of();
-}
+// const None = __NAMESPACE__ . '\None';
 
-const Nothing = __NAMESPACE__ . '\Nothing';
+// function Nothing()
+// {
+//     return Nothing::of();
+// }
 
-function Error($message)
-{
-    return Error::of($message);
-}
+// const Nothing = __NAMESPACE__ . '\Nothing';
 
-const Error = __NAMESPACE__ . '\Error';
+// function Error($message)
+// {
+//     return Error::of($message);
+// }
 
-function Either($value)
-{
-    return \lray138\GAS\Types\Either::of($value);
-}
+// const Error = __NAMESPACE__ . '\Error';
 
-const Either = __NAMESPACE__ . '\Either';
+// function Either($value)
+// {
+//     return \lray138\GAS\Types\Either::of($value);
+// }
 
-function Left($message)
-{
-    $out = \lray138\GAS\Types\Either\Left::of($message);
-    return $out;
-}
+// const Either = __NAMESPACE__ . '\Either';
 
-const Left = __NAMESPACE__ . '\Left';
+// function Left($message)
+// {
+//     $out = \lray138\GAS\Types\Either\Left::of($message);
+//     return $out;
+// }
 
-function Right($value)
-{
-    return \lray138\GAS\Types\Either\Right::of($value);
-}
+// const Left = __NAMESPACE__ . '\Left';
 
-const Right = __NAMESPACE__ . '\Right';
+// function Right($value)
+// {
+//     return \lray138\GAS\Types\Either\Right::of($value);
+// }
+
+// const Right = __NAMESPACE__ . '\Right';
 
 
-function Model()
-{
-    $f = function ($table, $db) {
-        return new Model($table, $db);
-    };
+// function Model()
+// {
+//     $f = function ($table, $db) {
+//         return new Model($table, $db);
+//     };
 
-    return \lray138\GAS\Functional\curry2($f)(...func_get_args());
-}
+//     return \lray138\GAS\Functional\curry2($f)(...func_get_args());
+// }
 
-function Calendar()
-{
-    return \lray138\GAS\Types\Calendar::of();
-}
+// function Calendar()
+// {
+//     return \lray138\GAS\Types\Calendar::of();
+// }
 
-function Time($datetime = null)
-{
-    return \lray138\GAS\Types\Time::of($datetime);
-}
+// function Time($datetime = null)
+// {
+//     return \lray138\GAS\Types\Time::of($datetime);
+// }
 
-const Time = __NAMESPACE__ . '\Time';
+// const Time = __NAMESPACE__ . '\Time';
 
-function Number($number = null)
-{
-    return is_null($number)
-        ? \lray138\GAS\Types\Number::of(0)
-        : \lray138\GAS\Types\Number::of($number);
-}
+// function Number($number = null)
+// {
+//     return is_null($number)
+//         ? \lray138\GAS\Types\Number::of(0)
+//         : \lray138\GAS\Types\Number::of($number);
+// }
 
-function Boolean($boolean)
-{
-    return \lray138\GAS\Types\Boolean::of($boolean);
-}
+// function Boolean($boolean)
+// {
+//     return \lray138\GAS\Types\Boolean::of($boolean);
+// }

@@ -2,6 +2,8 @@
 
 namespace lray138\G2;
 
+require "functions/types.php";
+
 // https://stackoverflow.com/questions/933367/php-how-to-best-determine-if-the-current-invocation-is-from-cli-or-web-server
 function isCLI()
 {
@@ -45,8 +47,9 @@ function dump()
     return $args[0];
 }
 
-function wrap() {
-
+// copying this over 
+function wrap($variable) {
+    return \lray138\G2\Types\wrap($variable);
 }
 
 function unwrap($var) {

@@ -34,29 +34,25 @@ class Dir
         return Str::of($this->path);
     }
 
-    public function getChildren(): Lst
+    public function getChildren()
     {
         $children = scandir($this->path);
 
-        return $children === false
-            ? Left::of("Unable to read directory: {$this->path}")
-            : Lst::of(
-                array_map(
-                    fn($s) => Str::of($s),
-                    array_values(
-                        array_diff($children, ['.', '..'])
-                    )
-                )
-            );
+        if ($children === false) {
+            return Left::of("Unable to read directory: {$this->path}");
+        }
+
+        $entries = array_values(array_diff($children, ['.', '..']));
+        $wrapped = array_map(fn($s) => Str::of($s), $entries);
+
+        return Lst::of($wrapped);
     }
 
-    public function getFiles(): Lst
+    public function getFiles()
     {
-        $children = $this->getChildren();
-
-        return $children->map(fn(Str $items) =>
-            array_filter($items, fn($item) =>
-                is_file($this->path . DIRECTORY_SEPARATOR . $item)));
+        return $this->getChildren()->filter(
+            fn($item) => is_file($this->path . DIRECTORY_SEPARATOR . unwrap($item))
+        );
     }
 
     public function getDirs()

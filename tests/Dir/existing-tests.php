@@ -18,6 +18,15 @@ it('loads children lazily when accessed for the first time', function() {
     expect($dir)->toEqual(['file1.txt', 'file2.txt']);
 });
 
+it('gets files correctly', function() {
+    $dir = Dir::of('/Users/lray/Sites/demo-dir')
+        ->getFiles()
+        ->extract();
+
+    expect($dir)->toEqual(['file1.txt', 'file2.txt']);
+});
+
+
 // it('returns an error if the directory does not exist', function() {
 //     // Simulate a non-existing directory
 //     $dirResult = Dir::of('invalid/path');
