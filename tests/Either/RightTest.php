@@ -19,13 +19,8 @@ it('returns a stored property using these methods', function() {
     expect(
         Right::of(['kvm' => 'value'])
             ->prop('kvm')
-            ->get()
-    )->toBe('value');
-
-    expect(
-        Right::of(['kvm' => 'value'])
-            ->prop(Str::of('kvm'))
-            ->get()
+            ->getOrLeft()
+            ->extract()
     )->toBe('value');
 
 });

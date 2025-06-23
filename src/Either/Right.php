@@ -21,4 +21,8 @@ final class Right extends Either
     {
         return $f($this->extract());
     }
+
+    public function getOrLeft() {
+        return $this->extract();
+    }
 }
