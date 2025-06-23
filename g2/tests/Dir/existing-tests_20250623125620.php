@@ -26,7 +26,7 @@ it('gets files correctly', function() {
     $dir = Dir::of('/Users/lray/Sites/demo-dir')
         ->getOrLeft()
         ->getFiles()
-        ->map(fn(File $f) => $f->getBasename()->extract())
+        ->map(fn(File $f) => $f->getPath()->extract())
         ->extract();
 
     expect($dir)->toEqual(['file1.txt', 'file2.txt']);

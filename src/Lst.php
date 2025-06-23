@@ -5,6 +5,7 @@ namespace lray138\G2;
 use FunctionalPHP\FantasyLand\{Monoid, Semigroup};
 use lray138\G2\Either;
 use lray138\G2\Common\Tappable;
+use function lray138\G2\dump;
 
 class Lst implements Monoid
 {
@@ -13,6 +14,15 @@ class Lst implements Monoid
     private function __construct($data)
     {
         $this->value = $data;
+    }
+
+    public function dump() {
+        dump($this);
+        return $this;
+    }
+
+    public function die($message = "") {
+        die($message);
     }
 
     public static function of($data)

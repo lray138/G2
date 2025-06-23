@@ -4,7 +4,7 @@ use lray138\G2\File;
 use lray138\G2\Either\Left;
 
 it('can create a file instance if the file exists', function () {
-    expect(File::of(dirname(__DIR__) .'/demo-dir/file1.txt')->get())->toBeInstanceOf(File::class);
+    expect(File::of(dirname(__DIR__) .'/demo-dir/file1.txt'))->toBeInstanceOf(File::class);
     expect(File::of('?'))->toBeInstanceOf(Left::class);
 });
 

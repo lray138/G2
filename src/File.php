@@ -3,7 +3,7 @@
 namespace lray138\G2;
 
 use lray138\G2\{
-    Either\Left,
+    Either,
     Num,
     Common\Gonad
 };
@@ -20,10 +20,14 @@ class File
     public static function of(string $path)
     {
         if (file_exists($path)) {
-            return new static($path);
+            return Either::right(new static($path));
         }
 
-        return Left::of("File does not exist: $path");
+        return Either::left("File does not exist: $path");
+    }
+
+    public function getBasename(): Str {
+        return Str::of(basename($this->path));
     }
 
     public function getPath(): Str

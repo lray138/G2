@@ -49,6 +49,12 @@ class Str implements Monoid, Pointed
         );
     }
 
+    public function prepend($value) {
+        return $this->map(fn(string $s) 
+            => unwrap($value) . $s 
+        );
+    }
+
     public function map(callable $f): self
     {
         $result = $f($this->extract());

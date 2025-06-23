@@ -3,7 +3,7 @@
 namespace lray138\G2;
 
 use lray138\G2\{
-    Either\Left,
+    Either,
     Lst,
     Str,
     Common\GonadTrait
@@ -23,10 +23,10 @@ class Dir
     public static function of(string $path)
     {
         if (is_dir($path)) {
-            return new static($path);
+            return Either::right(new static($path));
         }
 
-        return Left::of("Directory does not exist: $path");
+        return Either::left("Directory does not exist: $path");
     }
 
     public function getPath(): Str
@@ -36,6 +36,7 @@ class Dir
 
     public function getChildren()
     {
+ 
         $children = scandir($this->path);
 
         if ($children === false) {
@@ -43,16 +44,28 @@ class Dir
         }
 
         $entries = array_values(array_diff($children, ['.', '..']));
-        $wrapped = array_map(fn($s) => Str::of($s), $entries);
+        $wrapped = array_map(function($x) {
+            
+            if(is_file($this->path . '/' . $x)) {
+                return File::of($this->path . '/' . $x)->get();
+            } 
+
+            if(is_dir($this->path . '/' . $x)) {
+                return Dir::of($this->path . '/' . $x)->get();
+            }
+
+            return Str::of($this->path . '/' . $x);
+
+        }, $entries);
 
         return Lst::of($wrapped);
     }
 
     public function getFiles()
     {
-        return $this->getChildren()->filter(
-            fn($item) => is_file($this->path . DIRECTORY_SEPARATOR . unwrap($item))
-        );
+        return $this
+            ->getChildren()
+            ->filter(fn($item) => $item instanceof File);
     }
 
     public function getDirs()

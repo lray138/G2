@@ -2,21 +2,17 @@
 
 use lray138\G2\{
     Dir,
-    File,
-    Either\Left,
-    Either\Right
+    Either\Left
 };
 
 it('constructs correctly', function() {
-    expect(Dir::of('/Users/lray/Sites/'))->toBeInstanceOf(Right::class);
+    expect(Dir::of('/Users/lray/Sites/'))->toBeInstanceOf(Dir::class);
     expect(Dir::of('/Users/noray/Sites/'))->toBeInstanceOf(Left::class);
 });
 
 it('loads children lazily when accessed for the first time', function() {
     $dir = Dir::of('/Users/lray/Sites/demo-dir')
-        ->getOrLeft()
         ->getChildren()
-        ->map(fn(File $f) => $f->getBasename()->get())
         ->extract();
 
     expect($dir)->toEqual(['file1.txt', 'file2.txt']);
@@ -24,9 +20,7 @@ it('loads children lazily when accessed for the first time', function() {
 
 it('gets files correctly', function() {
     $dir = Dir::of('/Users/lray/Sites/demo-dir')
-        ->getOrLeft()
         ->getFiles()
-        ->map(fn(File $f) => $f->getBasename()->extract())
         ->extract();
 
     expect($dir)->toEqual(['file1.txt', 'file2.txt']);

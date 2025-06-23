@@ -2,7 +2,6 @@
 
 use lray138\G2\{
     Dir,
-    File,
     Either\Left,
     Either\Right
 };
@@ -22,15 +21,15 @@ it('loads children lazily when accessed for the first time', function() {
     expect($dir)->toEqual(['file1.txt', 'file2.txt']);
 });
 
-it('gets files correctly', function() {
-    $dir = Dir::of('/Users/lray/Sites/demo-dir')
-        ->getOrLeft()
-        ->getFiles()
-        ->map(fn(File $f) => $f->getBasename()->extract())
-        ->extract();
+// it('gets files correctly', function() {
+//     $dir = Dir::of('/Users/lray/Sites/demo-dir')
+//         ->getOrLeft()
+//         ->getFiles()
+//         ->map(fn(File $f) => $f->getPath()->extract())
+//         ->extract();
 
-    expect($dir)->toEqual(['file1.txt', 'file2.txt']);
-});
+//     expect($dir)->toEqual(['file1.txt', 'file2.txt']);
+// });
 
 // it('returns an error if the directory does not exist', function() {
 //     // Simulate a non-existing directory
