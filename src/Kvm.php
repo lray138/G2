@@ -4,7 +4,10 @@ namespace lray138\G2;
 
 use FunctionalPHP\FantasyLand\{Monoid, Semigroup};
 use lray138\G2\Either;
-use lray138\G2\Common\GetPropTrait;
+use lray138\G2\Common\{
+    GetPropTrait,
+    GetPropsTrait 
+};
 
 class Kvm implements Monoid
 {
@@ -59,6 +62,7 @@ class Kvm implements Monoid
     }
 
     use GetPropTrait;
+    use GetPropsTrait;
 
     public function map(callable $fn): self
     {

@@ -16,4 +16,9 @@ final class Right extends Either
     // I forgot I did that ;)
 
     use GetPropTrait;
+
+    public function fold(callable $_, callable $f)
+    {
+        return $f($this->extract());
+    }
 }

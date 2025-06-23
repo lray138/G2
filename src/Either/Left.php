@@ -52,4 +52,9 @@ final class Left extends Either implements Semigroup
     public function __call($method, $args) {
         return $this;
     }
+
+    public function fold(callable $f, callable $_)
+    {
+        return $f($this->extract());
+    }
 }

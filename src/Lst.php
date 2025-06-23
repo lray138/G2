@@ -77,7 +77,7 @@ class Lst implements Monoid
         $first = reset($this->value);
 
         return $first !== false
-            ? wrap($first)
+            ? Either::right(wrap($first))
             : Either::left("Lst::head() failed — list is empty");
     }
 
@@ -124,7 +124,7 @@ class Lst implements Monoid
             return Left::of("Index must be non-negative");
         }
 
-        if ($this->isEmpty()) {
+        if (count($this->extract()) == 0) {
             return Left::of("Index {$index} out of bounds");
         }
 

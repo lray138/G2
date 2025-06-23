@@ -57,3 +57,7 @@ function unwrap($var) {
         ? $var->extract()
         : $var;
 }
+
+function identity($var) {
+    return $var;
+}

@@ -17,8 +17,12 @@ trait GetPropTrait
         $stored = unwrap($this->extract());
         $key = unwrap($key);
 
-        return isset($stored[$key])
-            ? Either::right(wrap($stored[$key]))
-            : Either::left("prop '$key' not found");
+        if(!isset($stored[$key])) {
+            return Either::left("prop '$key' not found");
+        }
+
+        return $stored[$key] instanceof Either 
+            ? $stored[$key]
+            : Either::right(wrap($stored[$key]));
     }
 }

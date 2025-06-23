@@ -44,7 +44,7 @@ it('Task::put updates a post (simulated)', function () {
         'json' => $data
     ])
         ->decodeJson()
-        ->map(fn(Kvm $Kvm) => $Kvm->prop('title')->get());
+        ->map(fn(Kvm $Kvm) => $Kvm->prop('title')->fold(fn() => '', fn($x) => $x->get()));
 
     expect($task->run())->toBe('updated');
 });
@@ -54,7 +54,7 @@ it('Task::patch partially updates a post (simulated)', function () {
         'json' => ['title' => 'patched']
     ])
         ->decodeJson()
-        ->map(fn(Kvm $Kvm) => $Kvm->prop('title')->get());
+        ->map(fn(Kvm $Kvm) => $Kvm->prop('title')->fold(fn($x) => $x, fn($x) => $x->get()));
 
     expect($task->run())->toBe('patched');
 });
