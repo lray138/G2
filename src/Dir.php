@@ -34,6 +34,18 @@ class Dir
         return Str::of($this->path);
     }
 
+    public static function getOrCreate($path): Either {
+        if (is_dir($path)) {
+            return Either::right(Dir::of($path));
+        }
+
+        if (@mkdir($path, 0777, true)) {
+            return Either::right(Dir::of($path));
+        }
+
+        return Either::left("Failed to create directory at $path");
+    }
+
     public function getChildren()
     {
  
@@ -112,7 +124,7 @@ class Dir
         return Lst::of($dirs);
     }
 
-    public function getFilesRecursive(): Arr
+    public function getFilesRecursive(): Lst
     {
         $files = [];
 
@@ -123,7 +135,7 @@ class Dir
 
         foreach ($iterator as $fileinfo) {
             if ($fileinfo->isFile()) {
-                $files[] = $fileinfo->getRealPath();
+                $files[] = File::of($fileinfo->getRealPath())->fold(fn($x) => $x, fn($x) => $x);
             }
         }
 

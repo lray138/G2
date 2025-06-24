@@ -8,6 +8,7 @@ use function lray138\G2\{
     wrap,
     unwrap
 };
+
 use lray138\G2\Either;
 
 trait GetPropTrait
@@ -20,7 +21,7 @@ trait GetPropTrait
         if(!isset($stored[$key])) {
             return Either::left("prop '$key' not found");
         }
-
+        
         return $stored[$key] instanceof Either 
             ? $stored[$key]
             : Either::right(wrap($stored[$key]));

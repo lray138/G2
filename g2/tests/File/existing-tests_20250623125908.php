@@ -12,7 +12,7 @@ it('returns Left if the file does not exist', function () {
     // Assuming 'nonexistent_file.txt' does not exist for the test
     $file = File::of('nonexistent_file.txt');
     expect($file)->toBeInstanceOf(Left::class);
-    expect($file->fold(fn($x) => $x, fn($x) => $x))->toBe('File does not exist: nonexistent_file.txt');
+    expect($file->extract()->get())->toBe('File does not exist: nonexistent_file.txt');
 });
 
 // it('can get the size of the file', function () {

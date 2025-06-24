@@ -43,6 +43,17 @@ class Str implements Monoid, Pointed
         );
 	}
 
+    use \lray138\G2\Common\Tappable;
+
+    public function dump() {
+        dump($this);
+        return $this;
+    }
+
+    public function die($message = "") {
+        die($message);
+    }
+
     public function append($value) {
         return $this->map(fn(string $s) 
             => $s . unwrap($value)

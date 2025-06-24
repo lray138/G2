@@ -64,7 +64,7 @@ class Kvm implements Monoid
     use GetPropTrait;
     use GetPropsTrait;
 
-    public function map(callable $fn): self
+public function map(callable $fn): self
     {
         $mapped = [];
         foreach ($this->value as $key => $value) {
