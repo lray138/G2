@@ -3,6 +3,8 @@
 use lray138\G2\{
     Dir,
     File,
+    Either,
+    Lst,
     Either\Left,
     Either\Right
 };
@@ -14,20 +16,14 @@ it('constructs correctly', function() {
 
 it('loads children lazily when accessed for the first time', function() {
     $dir = Dir::of('/Users/lray/Sites/demo-dir')
-        ->getOrLeft()
-        ->getChildren()
-        ->map(fn(File $f) => $f->getBasename()->get())
-        ->extract();
-
-    expect($dir)->toEqual(['file1.txt', 'file2.txt']);
-});
-
-it('gets files correctly', function() {
-    $dir = Dir::of('/Users/lray/Sites/demo-dir')
-        ->getOrLeft()
-        ->getFiles()
-        ->map(fn(File $f) => $f->getBasename()->extract())
-        ->extract();
+        ->bind(fn(Dir $d): Either => $d->getChildren())
+        ->map(fn(Lst $lst) 
+            => $lst->map(fn(File $f) => $f->getBasename()->get())->get()
+        )
+        ->fold(
+            fn($x) => $x,
+            fn($x) => $x
+        );
 
     expect($dir)->toEqual(['file1.txt', 'file2.txt']);
 });

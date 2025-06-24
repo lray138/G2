@@ -46,100 +46,97 @@ class Dir
         return Either::left("Failed to create directory at $path");
     }
 
-    public function getChildren()
+    public function getChildren(): Either
     {
- 
-        $children = scandir($this->path);
-
+        $children = @scandir($this->path);
         if ($children === false) {
-            return Left::of("Unable to read directory: {$this->path}");
+            return Either::left("Unable to read directory: {$this->path}");
         }
-
         $entries = array_values(array_diff($children, ['.', '..']));
         $wrapped = array_map(function($x) {
+            $fullPath = $this->path . '/' . $x;
             
-            if(is_file($this->path . '/' . $x)) {
-                return File::of($this->path . '/' . $x)->get();
-            } 
-
-            if(is_dir($this->path . '/' . $x)) {
-                return Dir::of($this->path . '/' . $x)->get();
+            if (is_file($fullPath)) {
+                return File::of($fullPath)->get();
             }
 
-            return Str::of($this->path . '/' . $x);
+            if (is_dir($fullPath)) {
+                return Dir::of($fullPath)->get();
+            }
 
+            return Str::of($fullPath);
         }, $entries);
 
-        return Lst::of($wrapped);
+        return Either::right(Lst::of($wrapped));
     }
 
-    public function getFiles()
+    public function getFiles(): Either
     {
-        return $this
-            ->getChildren()
-            ->filter(fn($item) => $item instanceof File);
+        return $this->getChildren()->map(
+            fn($lst) => $lst->filter(fn($item) => $item instanceof File)
+        );
     }
 
-    public function getDirs()
+    public function getDirs(): Either
     {
-        $children = $this->getChildren();
-
-        return $children->map(fn($items) =>
-            array_filter($items, fn($item) =>
-                is_dir($this->path . DIRECTORY_SEPARATOR . $item)));
+        return $this->getChildren()->map(
+            fn($lst) => $lst->filter(fn($item) => $item instanceof Dir)
+        );
     }
 
-    public function getTree(): Arr
+    public function getTree(): Either
     {
         $descendants = [];
-
-        // Recursive function to traverse through directories
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($this->path, \RecursiveDirectoryIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::SELF_FIRST
-        );
-
-        foreach ($iterator as $fileinfo) {
-            $descendants[] = $fileinfo->getRealPath();
+        try {
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($this->path, \RecursiveDirectoryIterator::SKIP_DOTS),
+                \RecursiveIteratorIterator::SELF_FIRST
+            );
+            foreach ($iterator as $fileinfo) {
+                $descendants[] = $fileinfo->getRealPath();
+            }
+            return Either::right(Lst::of($descendants));
+        } catch (\Exception $e) {
+            return Either::left($e->getMessage());
         }
-
-        return Lst::of($descendants);
     }
 
-    public function getDirsRecursive(): Arr
+    public function getDirsRecursive(): Either
     {
         $dirs = [];
-
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($this->path, \RecursiveDirectoryIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::SELF_FIRST
-        );
-
-        foreach ($iterator as $fileinfo) {
-            if ($fileinfo->isDir()) {
-                $dirs[] = $fileinfo->getRealPath();
+        try {
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($this->path, \RecursiveDirectoryIterator::SKIP_DOTS),
+                \RecursiveIteratorIterator::SELF_FIRST
+            );
+            foreach ($iterator as $fileinfo) {
+                if ($fileinfo->isDir()) {
+                    $dirs[] = $fileinfo->getRealPath();
+                }
             }
+            return Either::right(Lst::of($dirs));
+        } catch (\Exception $e) {
+            return Either::left($e->getMessage());
         }
-
-        return Lst::of($dirs);
     }
 
-    public function getFilesRecursive(): Lst
+    public function getFilesRecursive(): Either
     {
         $files = [];
-
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($this->path, \RecursiveDirectoryIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::SELF_FIRST
-        );
-
-        foreach ($iterator as $fileinfo) {
-            if ($fileinfo->isFile()) {
-                $files[] = File::of($fileinfo->getRealPath())->fold(fn($x) => $x, fn($x) => $x);
+        try {
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($this->path, \RecursiveDirectoryIterator::SKIP_DOTS),
+                \RecursiveIteratorIterator::SELF_FIRST
+            );
+            foreach ($iterator as $fileinfo) {
+                if ($fileinfo->isFile()) {
+                    $files[] = File::of($fileinfo->getRealPath());
+                }
             }
+            return Either::right(Lst::of($files));
+        } catch (\Exception $e) {
+            return Either::left($e->getMessage());
         }
-
-        return Lst::of($files);
     }
 
     use \lray138\G2\Common\ExtendTrait;

@@ -21,11 +21,11 @@ class Kvm implements Monoid
     public static function of($data)
     {
         if (is_null($data)) {
-            return Either::left("Arr::class requires a valid value");
+            return Either::left("Kvm::of requires a valid associative array");
         }
 
         if(array_keys($data) == range(0, count($data) - 1)) {
-            return Either::left("Dct constructor expects an associative array");
+            return Either::left("Kvm::of expects an associative array (key-value map)");
         }
 
         if (!is_array($data) && is_iterable($data)) {
@@ -44,11 +44,10 @@ class Kvm implements Monoid
 
     public function concat(Semigroup $a): Semigroup
     {
-        if ($s instanceof self) {
+        if ($a instanceof self) {
             return new static(array_merge($this->extract(), $a->extract()));
         }
-
-        return Either::left('Arr::class concat expects Str');
+        throw new \InvalidArgumentException('Kvm::concat expects a Kvm');
     }
 
     public function get()

@@ -19,12 +19,11 @@ class File
         $this->path = $path;
     }
 
-    public static function of(string $path)
+    public static function of(string $path): Either
     {
         if (file_exists($path)) {
             return Either::right(new static($path));
         }
-
         return Either::left("File does not exist: $path");
     }
 
@@ -37,12 +36,12 @@ class File
         return Str::of($this->path);
     }
 
-    public function getSize()
+    public function getSize(): Either
     {
-        $size = filesize($this->path);
+        $size = @filesize($this->path);
         return $size === false
-            ? Left::of('good error message')
-            : Num::of($size);
+            ? Either::left('Unable to get file size: ' . $this->path)
+            : Either::right(Num::of($size));
     }
 
     public function getExtension(): Str
@@ -50,22 +49,20 @@ class File
         return Str::of(pathinfo($this->path, PATHINFO_EXTENSION));
     }
 
-    public function getContents()
+    public function getContents(): Either
     {
-        $c = file_get_contents($this->path);
+        $c = @file_get_contents($this->path);
         return $c === false
-            ? Left::of('good error message')
-            : Str::of($c);
+            ? Either::left('Unable to read file: ' . $this->path)
+            : Either::right(Str::of($c));
     }
 
-    public function putContents($contents) {
+    public function putContents($contents): Either {
         $c = unwrap($contents); // get string or raw content
         $path = $this->getPath(); // target file path
-
         $result = @file_put_contents($path, $c);
-
         return $result === false
-            ? Left::of("Unable to write to file: $path")
-            : Right::of($result); // returns number of bytes written
+            ? Either::left("Unable to write to file: $path")
+            : Either::right($result); // returns number of bytes written
     }
 }

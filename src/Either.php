@@ -23,4 +23,5 @@ abstract class Either implements Monad
     {
         return Right::of($value);
     }
+
 }
