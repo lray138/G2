@@ -17,11 +17,14 @@ class Regex
     }
     
     public static function of(string $pattern): Either {
+        
         if (@preg_match($pattern, '') === false) {
             return Either::left("Invalid regex pattern: $pattern");
         }
+
         return Either::right(new static($pattern));
     }
+
     
     public function match(string $subject): Either {
         $matches = [];

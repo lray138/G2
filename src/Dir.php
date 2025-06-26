@@ -67,7 +67,9 @@ class Dir
             return Str::of($fullPath);
         }, $entries);
 
-        return Either::right(Lst::of($wrapped));
+        $lst = Lst::of($wrapped);
+
+        return Either::right($lst);
     }
 
     public function getFiles(): Either
