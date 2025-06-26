@@ -36,6 +36,10 @@ class File
         return Str::of($this->path);
     }
 
+    public function dirname(): Str {
+        return Str::of(dirname($this->getPath()));
+    }
+
     public function getSize(): Either
     {
         $size = @filesize($this->path);

@@ -200,6 +200,10 @@ function wrap($variable)
         $variable = "Type for value '" . $variable . "' can not be determined";
     }
 
+    if($type == "array" && count($variable) == 0) {
+        return \lray138\G2\Lst::mempty();
+    }
+
     if($type == "array") {
         return array_keys($variable) !== range(0, count($variable) - 1)
             ? \lray138\G2\Kvm::of($variable)

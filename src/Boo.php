@@ -18,12 +18,12 @@ class Boo implements Monoid
 
     public static function true($operation = "and")
     {
-        return new Boolean(true, $operation);
+        return new Boo(true, $operation);
     }
 
     public static function false($operation = "and")
     {
-        return new Boolean(false, $operation);
+        return new Boo(false, $operation);
     }
 
     public static function of($value, $operation = "and")
@@ -64,6 +64,15 @@ class Boo implements Monoid
     {
         return $f($this->extract());
     }
+
+    public function isFalse() {
+        return $this->extract() == false;
+    }
+
+    public function isTrue() {
+        return $this->extract() == true;
+    }
+    
 
     public function get()
     {

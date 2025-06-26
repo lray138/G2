@@ -26,4 +26,8 @@ trait GetPropTrait
             ? $stored[$key]
             : Either::right(wrap($stored[$key]));
     }
+
+    public function key($key) {
+        return $this->prop($key);
+    }
 }

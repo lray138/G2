@@ -29,4 +29,9 @@ trait GetPropsTrait
 
         return Kvm::of($result);
     }
+
+    public function keys($keys): Kvm 
+    {
+        return $this->props($keys);
+    }
 }

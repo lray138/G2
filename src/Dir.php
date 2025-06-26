@@ -130,9 +130,10 @@ class Dir
             );
             foreach ($iterator as $fileinfo) {
                 if ($fileinfo->isFile()) {
-                    $files[] = File::of($fileinfo->getRealPath());
+                    $files[] = File::of($fileinfo->getRealPath())->get();
                 }
             }
+
             return Either::right(Lst::of($files));
         } catch (\Exception $e) {
             return Either::left($e->getMessage());

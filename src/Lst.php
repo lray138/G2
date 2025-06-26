@@ -28,24 +28,35 @@ class Lst implements Monoid
     public static function of($data)
     {
         if (is_null($data)) {
-            return Either::left("Arr::class requires a valid value");
+            return Either::left("Lst::class requires a valid value");
         }
 
-        if(is_array($data) && count($data) == 0) {
-            return new static($data);
-        }
-
-        if(array_keys($data) != range(0, count($data) - 1)) {
-            return Either::left("List constructor expects a primative array without keys");
-        }
-        
+        // Convert iterables (like DOMNodeList) to arrays early
         if (!is_array($data) && is_iterable($data)) {
             $data = iterator_to_array($data);
-        } elseif (!is_array($data)) {
+        }
+
+        // If not iterable or array, wrap it in an array
+        if (!is_array($data)) {
             $data = [$data];
         }
 
+        if(is_array($data) && count($data) == 0) {
+            return Lst::mempty();
+        }
+
+        // Ensure it's a list (zero-indexed, no keys)
+        if (array_keys($data) !== range(0, count($data) - 1)) {
+            return Either::left("Lst constructor expects a primitive array without keys");
+        }
+
         return new static($data);
+    }
+
+    public function implode($glue = ''): Str
+    {
+        $glue = unwrap($glue);
+        return Str::of(implode($glue, $this->extract()));
     }
 
     public static function mempty()
@@ -77,7 +88,7 @@ class Lst implements Monoid
         return new static($flattened);
     }
 
-    public function head()
+    public function head(): Either
     {
         if (empty($this->extract())) {
             return Either::left("Lst::head() failed — list is empty");
@@ -91,9 +102,15 @@ class Lst implements Monoid
             : Either::left("Lst::head() failed — list is empty");
     }
 
-    public function tail(): self
+    public function tail(): Either
     {
-        return new static(array_slice($this->value, 1));
+        if (empty($this->extract())) {
+            return Either::left("Lst::tail() failed — list is empty");
+        }
+
+        $sliced = array_slice($this->value, 1);
+
+        return Either::right(new static($sliced));
     }
 
     public function filter(callable $predicate): self
@@ -108,6 +125,43 @@ class Lst implements Monoid
     {
         return array_reduce($this->value, $fn, $initial);
     }
+
+    public function push(...$items): self
+    {
+        return new static(array_merge($this->extract(), $items));
+    }
+
+function flatten() {
+    $result = [];
+    
+    $flattenArray = function ($array, &$result) use (&$flattenArray) {
+        foreach ($array as $key => $value) {
+            $value = unwrap($value);
+            if (is_array($value)) {
+                $flattenArray($value, $result);
+            } elseif ($value instanceof self) {
+                $flattenArray($value->extract(), $result);
+            } else {
+                $result[] = $value;
+            }
+        }
+    };
+
+    $flattenArray($this->extract(), $result);
+
+    return new static($result);
+}
+
+public function forEach(callable $callback): self
+{
+    foreach ($this->value as $key => $item) {
+        $callback(wrap($item), wrap($key));
+    }
+
+    return $this;
+}
+
+
 
     public function concat(Semigroup $a): Semigroup
     {
@@ -128,8 +182,11 @@ class Lst implements Monoid
         return $this->value;
     }
 
-    public function nth(int $index)
+    public function nth($index)
     {
+
+        $index = unwrap($index);
+        
         if ($index < 0) {
             return Left::of("Index must be non-negative");
         }
@@ -143,7 +200,11 @@ class Lst implements Monoid
             return $this->head();
         }
 
-        return $this->tail()->nth($index - 1);
+        return $this->tail()->bind(fn(Lst $t) => $t->nth($index - 1));
+    }
+
+    public function count(): Num {
+        return Num::of(count($this->extract()));
     }
 
 }

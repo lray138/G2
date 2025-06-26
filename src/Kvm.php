@@ -9,6 +9,8 @@ use lray138\G2\Common\{
     GetPropsTrait 
 };
 
+use function lray138\G2\wrap;
+
 class Kvm implements Monoid
 {
     private $value;
@@ -96,6 +98,12 @@ public function bind(callable $fn): self
         return new static($result);
     }
 
+    public function set($key, $value) {
+        $new = $this->extract();
+        $new[$key] = $value;
+        return new static($new);
+    }
+
     public function reduce(callable $fn, $initial)
     {
         $acc = $initial;
@@ -103,6 +111,17 @@ public function bind(callable $fn): self
             $acc = $fn($acc, $value, $key);
         }
         return $acc;
+    }
+
+    public function forEach(callable $fn): self {
+        foreach ($this->extract() as $key => $value) {
+            $fn(wrap($value), wrap($key));
+        }
+        return $this;
+    }
+
+    public function count() {
+        return Num::of(count($this->extract()));
     }
 
 }
