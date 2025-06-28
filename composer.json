@@ -1,7 +1,24 @@
 {
     "name": "lray138/g2",
-    "description": "Functional Types / PHP Toolbox",
+    "description": "A practical functional programming toolbox for PHP - featuring monads, immutable data structures, and safe file operations",
     "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "functional-programming",
+        "monads",
+        "either",
+        "maybe",
+        "immutable",
+        "file-operations",
+        "regex",
+        "http-client",
+        "php"
+    ],
+    "homepage": "https://github.com/lray138/g2",
+    "support": {
+        "issues": "https://github.com/lray138/g2/issues",
+        "source": "https://github.com/lray138/g2"
+    },
     "autoload": {
         "psr-4": {
             "lray138\\G2\\": "src/"
@@ -10,6 +27,11 @@
             "src/functions.php"
         ]
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "lray138",
@@ -17,6 +39,7 @@
         }
     ],
     "require": {
+        "php": ">=8.0",
         "functional-php/fantasy-land": "^1",
         "guzzlehttp/guzzle": "^7.9"
     },
@@ -32,5 +55,7 @@
         "test": "pest",
         "lint": "phpcs --standard=phpcs.xml", 
         "fix": "phpcbf --standard=phpcs.xml"
-    }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }
