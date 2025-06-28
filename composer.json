@@ -1,5 +1,6 @@
 {
     "name": "lray138/g2",
+    "version": "0.1.0",
     "description": "A practical functional programming toolbox for PHP - featuring monads, immutable data structures, and safe file operations",
     "type": "library",
     "license": "MIT",
