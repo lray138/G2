@@ -21,7 +21,7 @@ it('returns "props" returns Either::right vs Either::left', function() {
 
     $ps = $kvm->props(['a', 'b']);
  
-    expect($ps->prop('a')->get())->toBeInstanceOf(Num::class);
+    expect($ps->prop('a')->get())->toBeInstanceOf(Right::class);
     expect($ps->prop('c')->get())->toBeInstanceOf(Left::class);
 
 });

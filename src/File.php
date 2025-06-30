@@ -19,12 +19,23 @@ class File
         $this->path = $path;
     }
 
-    public static function of(string $path): Either
+    public static function of($path): Either
     {
+        $path = unwrap($path);
         if (file_exists($path)) {
             return Either::right(new static($path));
         }
         return Either::left("File does not exist: $path");
+    }
+
+    public static function either($path) {
+        $path = unwrap($path);
+        if (file_exists($path)) {
+            return Either::right(new static($path));
+        }
+
+        return Either::left("File does not exist: $path");
+        
     }
 
     public function getBasename(): Str {

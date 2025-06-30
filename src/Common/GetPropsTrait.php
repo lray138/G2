@@ -30,8 +30,10 @@ trait GetPropsTrait
         return Kvm::of($result);
     }
 
+    // don't like this anymore actually
     public function keys($keys): Kvm 
     {
         return $this->props($keys);
     }
+
 }
