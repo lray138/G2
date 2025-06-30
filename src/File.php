@@ -78,6 +78,6 @@ class File
         $result = @file_put_contents($path, $c);
         return $result === false
             ? Either::left("Unable to write to file: $path")
-            : Either::right($result); // returns number of bytes written
+            : Either::right($this); // returns number of bytes written
     }
 }
