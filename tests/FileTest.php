@@ -10,13 +10,9 @@ use lray138\G2\{
 // read
 it('can read a file', function () {
     
-    // $f = File::either(dirname(__DIR__) . '/demo-dir/file1.txt')
-    //     ->bind(fn(File $f) => $f->getContents())
-    //     ->fold(
-    //         fn($e) => $u,
-    //         fn($v) => $t
-    //     )
-    // );
+    $f = File::either(dirname(__DIR__) . '/demo-dir/file1.txt');
+
+
 
     // expect($f)->toBeInstanceOf(Either::class);
 

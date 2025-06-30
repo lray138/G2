@@ -2,25 +2,41 @@
 
 namespace lray138\G2;
 
-class Err extends \Exception
+class Err
 {
-    private $input;
+    private $value;
 
-    public function __construct($message, $input = null)
+    public function __construct(Kvm $err)
     {
-        parent::__construct($message);
-        $this->input = $input;
+        $this->value = $err;
     }
 
     public static function of($data): self
     {
+        
+        if(is_string($data)) {
+            return new self(Kvm::mempty()->set("message", $data));
+        }
+        
         if (is_array($data)) {
             if (!isset($data['message'])) {
                 throw new \Exception('Err::of requires a message');
             }
-            return new self($data['message'], $data['input'] ?? null);
+
+            $kvm = Kvm::mempty()->set("message", $data['message']);
+
+            if(isset($data['input'])) {
+                $kvm = $kvm->set("input", $data["input"]);
+            }
+
+            return new self($kvm);
         }
-        return new self($data);
+
+        throw new \Exception('Err::of requires a message');
+    }
+
+    public function getMessage(): Str {
+        return $this->value->prop("message");
     }
 
     public function getInput() {

@@ -19,13 +19,13 @@ class File
         $this->path = $path;
     }
 
-    public static function of($path): Either
+    public static function of($path)
     {
         $path = unwrap($path);
         if (file_exists($path)) {
             return Either::right(new static($path));
         }
-        return Either::left("File does not exist: $path");
+        throw new \Exception("File does not exist: $path");
     }
 
     public static function either($path) {
@@ -34,7 +34,7 @@ class File
             return Either::right(new static($path));
         }
 
-        return Either::left("File does not exist: $path");
+        return Either::left(Err::of(["message" => "File does not exist: $path", "input" => $path]));
         
     }
 

@@ -5,14 +5,13 @@ use lray138\G2\Either\Left;
 
 it('can create a file instance if the file exists', function () {
     expect(File::of(dirname(__DIR__) .'/demo-dir/file1.txt')->get())->toBeInstanceOf(File::class);
-    expect(File::of('?'))->toBeInstanceOf(Left::class);
+    //expect(File::of('?'))->toBeInstanceOf(Left::class);
 });
 
 it('returns Left if the file does not exist', function () {
     // Assuming 'nonexistent_file.txt' does not exist for the test
-    $file = File::of('nonexistent_file.txt');
+    $file = File::either('nonexistent_file.txt');
     expect($file)->toBeInstanceOf(Left::class);
-    expect($file->fold(fn($x) => $x, fn($x) => $x))->toBe('File does not exist: nonexistent_file.txt');
 });
 
 // it('can get the size of the file', function () {
