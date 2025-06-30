@@ -23,6 +23,25 @@ class Kvm implements Monoid
     public static function of($data)
     {
         if (is_null($data)) {
+            throw new \Exception("Kvm::of requires a valid associative array");
+        }
+
+        if (array_keys($data) == range(0, count($data) - 1)) {
+            throw new \Exception("Kvm::of expects an associative array (key-value map)");
+        }
+
+        if (!is_array($data) && is_iterable($data)) {
+            $data = iterator_to_array($data);
+        } elseif (!is_array($data)) {
+            $data = [$data];
+        }
+
+        return new static($data);
+    }
+
+    public static function either($data)
+    {
+        if (is_null($data)) {
             return Either::left("Kvm::of requires a valid associative array");
         }
 
