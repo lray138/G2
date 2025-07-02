@@ -61,4 +61,8 @@ final class Left extends Either implements Semigroup
     public function getOrLeft() {
         return $this;
     }
+
+    public function getOrElse($value) {
+        return $value;
+    }
 }

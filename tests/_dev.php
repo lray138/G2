@@ -30,3 +30,4 @@ $f = File::either(dirname(__DIR__) . '/tests/demo-dir/file1.txt')
     );
 
 dump($f);
+

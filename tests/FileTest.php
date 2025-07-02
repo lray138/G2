@@ -12,8 +12,6 @@ it('can read a file', function () {
     
     $f = File::either(dirname(__DIR__) . '/demo-dir/file1.txt');
 
-
-
     // expect($f)->toBeInstanceOf(Either::class);
 
     // $f->map(function (File $file) {

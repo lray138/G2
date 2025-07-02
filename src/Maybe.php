@@ -13,4 +13,14 @@ abstract class Maybe implements Monad
             ? Nothing::unit()
             : Just::of($value);
     }
+
+    public static function just($value)
+    {
+        return Just::of($value);
+    }
+
+    public static function nothing($value = null)
+    {
+        return Nothing::of($value);
+    }
 }

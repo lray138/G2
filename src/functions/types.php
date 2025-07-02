@@ -177,7 +177,7 @@ function wrap($variable)
     ];
 
     $type = getType($variable);
-
+    
     $object_types = [
         "DateTime" => "\lray138\GAS\Types\Time"
         , "Moment\MomentFromVo" => "\lray138\GAS\Types\Time"
@@ -191,6 +191,7 @@ function wrap($variable)
 
         // this is not right
         //return call_user_func("\\lray138\\GAS\\Types\\" . $result . "::of", $class);
+
         return \lray138\G2\Either\Right::of($variable);
     }
 

@@ -4,10 +4,13 @@ namespace lray138\G2;
 
 use lray138\G2\{
     Either,
+    Maybe,
     Lst,
     Str,
     Common\GonadTrait
 };
+
+use function PHPUnit\Framework\throwException;
 
 class Dir
 {
@@ -20,13 +23,33 @@ class Dir
         $this->path = rtrim($path, DIRECTORY_SEPARATOR); // Normalize
     }
 
-    public static function of(string $path)
+    public static function of($path)
     {
+        if (is_dir($path)) {
+            return new static($path);
+        }
+
+        throw new \InvalidArgumentException("Directory does not exist: {$path}");
+    }
+
+    public static function either($path)
+    {
+        $path = unwrap($path);
         if (is_dir($path)) {
             return Either::right(new static($path));
         }
 
-        return Either::left("Directory does not exist: $path");
+        return Either::left("Somethign went wrong");
+    }
+
+    public static function maybe($path)
+    {
+        $path = unwrap($path);
+        if (is_dir($path)) {
+            return Maybe::just(new static($path));
+        }
+
+        return Maybe::nothing();
     }
 
     public function getPath(): Str
@@ -34,16 +57,16 @@ class Dir
         return Str::of($this->path);
     }
 
-    public static function getOrCreate($path): Either {
+    public static function getOrCreate($path): Dir {
         if (is_dir($path)) {
-            return Either::right(Dir::of($path));
+            return Dir::of($path);
         }
 
         if (@mkdir($path, 0777, true)) {
-            return Either::right(Dir::of($path));
+            return Dir::of($path);
         }
 
-        return Either::left("Failed to create directory at $path");
+        throw new \Exception("Failed to create directory at $path");
     }
 
     public function getChildren(): Either

@@ -6,16 +6,38 @@ use lray138\G2\{
     Either,
     Lst,
     Either\Left,
-    Either\Right
+    Either\Right,
+    Maybe\Just,
+    Maybe\Nothing
 };
 
-it('constructs correctly', function() {
-    expect(Dir::of('/Users/lray/Sites/'))->toBeInstanceOf(Right::class);
-    expect(Dir::of('/Users/noray/Sites/'))->toBeInstanceOf(Left::class);
+describe("It constructs correctly", function() {
+
+    it('constructs correctly using pointed "of" method', function() {
+        // this exists
+        expect(Dir::of('/Users/lray/Sites/'))->toBeInstanceOf(Dir::class);
+        // this doesn't exist and throws exception
+        expect(fn() => Dir::of('/Users/noray/Sites/'))->toThrow(\InvalidArgumentException::class);
+    });
+
+    it('constructs correctly using pointed "either" method', function() {
+        // this exists
+        expect(Dir::either('/Users/lray/Sites/'))->toBeInstanceOf(Right::class);
+        // this doesn't exist and returns 
+        expect(Dir::either('/Users/noray/Sites/'))->toBeInstanceOf(Left::class);
+    });
+
+    it('constructs correctly using pointed "maybe" method', function() {
+        // this exists
+        expect(Dir::maybe('/Users/lray/Sites/'))->toBeInstanceOf(Just::class);
+        // this doesn't exist and returns 
+        expect(Dir::maybe('/Users/noray/Sites/'))->toBeInstanceOf(Nothing::class);
+    });
+
 });
 
-it('loads children lazily when accessed for the first time', function() {
-    $dir = Dir::of('/Users/lray/Sites/demo-dir')
+it('loads children from a directory', function() {
+    $dir = Dir::maybe('/Users/lray/Sites/demo-dir')
         ->bind(fn(Dir $d): Either => $d->getChildren())
         ->map(fn(Lst $lst) 
             => $lst->map(fn(File $f) => $f->getBasename()->get())->get()
@@ -28,21 +50,7 @@ it('loads children lazily when accessed for the first time', function() {
     expect($dir)->toEqual(['file1.txt', 'file2.txt']);
 });
 
-// it('returns an error if the directory does not exist', function() {
-//     // Simulate a non-existing directory
-//     $dirResult = Dir::of('invalid/path');
-//     expect($dirResult)->toBeInstanceOf(Left::class);
-//     expect($dirResult->getValue())->toEqual('Directory does not exist: invalid/path');
-// });
 
-// it('handles empty directory content correctly', function() {
-//     // Simulate an empty directory
-//     $this->mock(Dir::class)->shouldReceive('scandir')->andReturn([]);
-    
-//     $children = $this->dir->getChildren()->run();
-//     expect($children)->toBeInstanceOf(Right::class);
-//     expect($children->getValue())->toEqual([]);  // Should be an empty array for an empty directory
-// });
 
 // it('caches children and avoids redundant scanning', function() {
 //     // Simulate that scandir is called only once

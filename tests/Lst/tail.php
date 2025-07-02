@@ -2,6 +2,7 @@
 
 use lray138\G2\{
     Either\Left,
+    Either\Right,
     Lst
 };
 
@@ -10,8 +11,8 @@ it('returns the tail of a non-empty list', function () {
 
     $tail = $lst->tail();
 
-    expect($tail)->toBeInstanceOf(Lst::class);
-    expect($tail->get())->toEqual([20, 30]);
+    expect($tail)->toBeInstanceOf(Right::class);
+    expect($tail->get()->get())->toEqual([20, 30]);
 });
 
 it('returns an empty list when tail is called on a 1-element list', function () {
@@ -19,8 +20,7 @@ it('returns an empty list when tail is called on a 1-element list', function () 
 
     $tail = $lst->tail();
 
-    expect($tail)->toBeInstanceOf(Lst::class);
-    expect($tail->get())->toEqual([]);
+    expect($tail)->toBeInstanceOf(Left::class);
 });
 
 it('returns an empty list when tail is called on an empty list', function () {
@@ -28,6 +28,5 @@ it('returns an empty list when tail is called on an empty list', function () {
 
     $tail = $lst->tail();
 
-    expect($tail)->toBeInstanceOf(Lst::class);
-    expect($tail->get())->toEqual([]);
+    expect($tail)->toBeInstanceOf(Left::class);
 });

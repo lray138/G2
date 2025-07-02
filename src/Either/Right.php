@@ -27,7 +27,7 @@ final class Right extends Either
         return $this->extract();
     }
 
-public function call($method, ...$args) {
+    public function call($method, ...$args) {
         $value = $this->extract();
 
         if (is_object($value) && method_exists($value, $method)) {
@@ -44,5 +44,9 @@ public function call($method, ...$args) {
     public function dump() {
         dump($this);
         return $this;
+    }
+
+    public function getOrElse($value) {
+        return $this->extract();
     }
 }

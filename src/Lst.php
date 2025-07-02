@@ -104,7 +104,9 @@ class Lst implements Monoid
 
     public function tail(): Either
     {
-        if (empty($this->extract())) {
+        $value = $this->extract();
+
+        if (empty($value) || count($value) == 1) {
             return Either::left("Lst::tail() failed — list is empty");
         }
 

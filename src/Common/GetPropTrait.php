@@ -13,7 +13,7 @@ use lray138\G2\Either;
 
 trait GetPropTrait
 {
-    public function unsafeProp($key)
+    public function expect($key)
     {
         $stored = unwrap($this->extract());
         $key = unwrap($key);
@@ -32,7 +32,7 @@ trait GetPropTrait
     public function prop($key)
     {
         try {
-            $value = $this->unsafeProp($key);
+            $value = $this->expect($key);
             return \lray138\G2\Either::right(wrap($value));
         } catch (\lray138\G2\Err $err) {
             return \lray138\G2\Either::left($err);
