@@ -9,7 +9,7 @@ use function lray138\G2\{
     unwrap
 };
 
-use lray138\G2\Either;
+use lray138\G2\Result;
 
 trait GetPropTrait
 {
@@ -31,14 +31,9 @@ trait GetPropTrait
 
     public function prop($key)
     {
-        try {
-            $value = $this->expect($key);
-            return \lray138\G2\Either::right(wrap($value));
-        } catch (\lray138\G2\Err $err) {
-            return \lray138\G2\Either::left($err);
-        } catch (\Exception $e) {
-            return \lray138\G2\Either::left(\lray138\G2\Err::of($e->getMessage()));
-        }
+        return Result::try(function() use ($key) {
+            return $this->expect($key);
+        });
     }
 
     public function pluck($key) {

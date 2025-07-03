@@ -19,7 +19,7 @@ it('returns a stored property using these methods', function() {
     expect(
         Right::of(['kvm' => 'value'])
             ->prop('kvm')
-            ->getOrLeft()
+            ->getOrElse('default')
             ->extract()
     )->toBe('value');
 

@@ -26,7 +26,6 @@ class Boo implements Monoid
         return new Boo(false, $operation);
     }
 
-    
     /**
      * Creates a new Boo instance from a value.
      * 
@@ -44,6 +43,17 @@ class Boo implements Monoid
         }
 
         return new static($value, $operation);
+    }
+
+    public static function result($value, $operation = "and") {
+        if (!is_bool($value) && !in_array($value, [0, 1], true)) {
+            return Result::err([
+                'message' => 'Boo::result expects a boolean or integer 0/1',
+                'input' => $value
+            ]);
+        }
+
+        return Result::ok(new static($value, $operation));
     }
 
     public static function mempty($operation = null)
