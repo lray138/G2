@@ -35,8 +35,16 @@ class File
             return Either::right(new static($path));
         }
 
-        return Either::left(Err::of(["message" => "File does not exist: $path", "input" => $path]));
-        
+        return Either::left(Str::of("File does not exist: $path"));
+    }
+
+    public static function result($path) {
+        $path = unwrap($path);
+        if (file_exists($path)) {
+            return Result::ok(new static($path));
+        }
+
+        return Result::err(["message" => "File does not exist: $path", "input" => $path]);
     }
 
     public function getBasename(): Str {

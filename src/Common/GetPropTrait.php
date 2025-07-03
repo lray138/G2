@@ -9,7 +9,7 @@ use function lray138\G2\{
     unwrap
 };
 
-use lray138\G2\Result;
+use lray138\G2\Either;
 
 trait GetPropTrait
 {
@@ -31,9 +31,14 @@ trait GetPropTrait
 
     public function prop($key)
     {
-        return Result::try(function() use ($key) {
-            return $this->expect($key);
-        });
+        $stored = unwrap($this->extract());
+        $key = unwrap($key);
+
+        if (!isset($stored[$key])) {
+            return Either::left("Property '$key' not found");
+        }
+
+        return Either::right(wrap($stored[$key]));
     }
 
     public function pluck($key) {

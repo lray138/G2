@@ -3,16 +3,23 @@
 use lray138\G2\File;
 use lray138\G2\Num;
 use lray138\G2\Either\Left;
+use lray138\G2\Result\Err;
 
 it('can create a file instance if the file exists', function () {
     expect(File::of(dirname(__DIR__) .'/demo-dir/file1.txt'))->toBeInstanceOf(File::class);
     //expect(File::of('?'))->toBeInstanceOf(Left::class);
 });
 
-it('returns Left if the file does not exist', function () {
+it('returns Left if the file does not exist called with Either', function () {
     // Assuming 'nonexistent_file.txt' does not exist for the test
     $file = File::either('nonexistent_file.txt');
     expect($file)->toBeInstanceOf(Left::class);
+});
+
+it('returns Err if the file does not exist called with Result', function () {
+    // Assuming 'nonexistent_file.txt' does not exist for the test
+    $file = File::result('nonexistent_file.txt');
+    expect($file)->toBeInstanceOf(Err::class);
 });
 
 it('can get the size of the file', function () {
