@@ -24,4 +24,11 @@ abstract class Either implements Monad
         return Right::of($value);
     }
 
+    public function goe($value) {
+        return $this instanceof Left 
+            ? $value
+            : $this->extract();
+
+    }
+
 }

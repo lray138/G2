@@ -36,3 +36,14 @@ it('bind applies function to Right but not Left', function () {
     expect($left)->toBeInstanceOf(Left::class);
     expect($left->extract())->toBe('fail');
 }); 
+
+// test function "getOrElse" and "goe"
+
+it('getOrElse returns the value of Right or the default value of Left', function () {
+    $right = Either::right(42);
+    $left = Either::left('error');
+
+    expect($right->getOrElse(100))->toBe(42);
+    expect($left->getOrElse(100))->toBe(100);
+});
+

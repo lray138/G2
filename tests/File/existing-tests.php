@@ -1,10 +1,11 @@
 <?php 
 
 use lray138\G2\File;
+use lray138\G2\Num;
 use lray138\G2\Either\Left;
 
 it('can create a file instance if the file exists', function () {
-    expect(File::of(dirname(__DIR__) .'/demo-dir/file1.txt')->get())->toBeInstanceOf(File::class);
+    expect(File::of(dirname(__DIR__) .'/demo-dir/file1.txt'))->toBeInstanceOf(File::class);
     //expect(File::of('?'))->toBeInstanceOf(Left::class);
 });
 
@@ -14,21 +15,23 @@ it('returns Left if the file does not exist', function () {
     expect($file)->toBeInstanceOf(Left::class);
 });
 
-// it('can get the size of the file', function () {
-//     // Create a temporary file for the test
-//     $path = __DIR__ . '/temp.txt';
-//     file_put_contents($path, 'Hello, World!');
+it('can get the size of the file', function () {
+    // Create a temporary file for the test
+    $path = __DIR__ . '/temp.txt';
+    file_put_contents($path, 'Hello, World!');
     
-//     // Test the size
-//     $file = File::of($path);
-//     $size = $file->getSize()->run();
+    // Test the size
+    $file = File::of($path);
+    $size = $file->getSize()
+        ->map(fn(Num $n) => $n->extract())
+        ->extract();
     
-//     // Verify the size matches the content
-//     expect($size)->toBe(strlen('Hello, World!'));
+    // Verify the size matches the content
+    expect($size)->toBe(strlen('Hello, World!'));
     
-//     // Clean up the test file
-//     unlink($path);
-// });
+    // Clean up the test file
+    unlink($path);
+});
 
 // it('can get the extension of the file', function () {
 //     // Create a temporary file with an extension

@@ -23,8 +23,9 @@ class File
     {
         $path = unwrap($path);
         if (file_exists($path)) {
-            return Either::right(new static($path));
+            return new static($path);
         }
+
         throw new \Exception("File does not exist: $path");
     }
 

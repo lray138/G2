@@ -5,6 +5,11 @@ namespace lray138\G2;
 use FunctionalPHP\FantasyLand\{Monoid, Semigroup, Pointed};
 use lray138\G2\Either;
 
+/**
+ * String wrapper class implementing Monoid and Pointed interfaces.
+ * 
+ * @see tests/StrTest.php and tests/Str/existing.php for test coverage
+ */
 class Str implements Monoid, Pointed
 {
     private $value;
@@ -14,9 +19,14 @@ class Str implements Monoid, Pointed
         $this->value = $value;
     }
 
-    public static function of($s)
+    
+    public static function of($value)
     {
-        return new static($s);
+        if(!is_string($value)) {
+            throw new \InvalidArgumentException('Str::of expects a string');
+        }
+
+        return new static($value);
     }
 
     public static function mempty()

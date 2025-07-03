@@ -49,3 +49,19 @@ it('ensures map is consistent with bind for Boo', function () {
 
     expect($mapResult->extract())->toBe($bindResult->extract());
 });
+
+it('throws InvalidArgumentException for non-boolean values in of()', function () {
+    // Tests validation in src/Boo.php line 29-35
+    expect(fn() => Boo::of([]))->toThrow(\InvalidArgumentException::class);
+    expect(fn() => Boo::of(new stdClass()))->toThrow(\InvalidArgumentException::class);
+    expect(fn() => Boo::of(fn() => true))->toThrow(\InvalidArgumentException::class);
+});
+
+it('mempty returns correct identity values', function () {
+    // Tests mempty in src/Boo.php line 38-43
+    $andMempty = Boo::mempty("and");
+    $orMempty = Boo::mempty("or");
+    
+    expect($andMempty->extract())->toBe(true);
+    expect($orMempty->extract())->toBe(false);
+});

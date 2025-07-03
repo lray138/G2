@@ -80,11 +80,11 @@ class Dir
             $fullPath = $this->path . '/' . $x;
             
             if (is_file($fullPath)) {
-                return File::of($fullPath)->get();
+                return File::of($fullPath);
             }
 
             if (is_dir($fullPath)) {
-                return Dir::of($fullPath)->get();
+                return Dir::of($fullPath);
             }
 
             return Str::of($fullPath);

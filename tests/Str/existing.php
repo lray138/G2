@@ -5,8 +5,15 @@ use lray138\G2\Str;
 
 it('constructs properly', function () {
     $s = Str::of('string');
+
+    expect($s)->toBeInstanceOf(Str::class);
     expect($s->extract())->toBe('string');
+
+    $object = new stdClass();
+    expect(fn() => Str::of($object))->toThrow(\InvalidArgumentException::class);
+
 });
+
 
 it('mempty works', function () {
     $s = Str::mempty();

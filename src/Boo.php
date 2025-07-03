@@ -26,8 +26,23 @@ class Boo implements Monoid
         return new Boo(false, $operation);
     }
 
+    
+    /**
+     * Creates a new Boo instance from a value.
+     * 
+     * @param mixed $value The value to convert to boolean
+     * @param string $operation The logical operation ("and" or "or")
+     * @return static
+     * @throws \InvalidArgumentException If value is not a boolean or integer 0/1
+     * 
+     * @see tests/Boo/original-tests.php for test coverage
+     */
     public static function of($value, $operation = "and")
     {
+        if (!is_bool($value) && !in_array($value, [0, 1], true)) {
+            throw new \InvalidArgumentException('Boo::of expects a boolean or integer 0/1');
+        }
+
         return new static($value, $operation);
     }
 
