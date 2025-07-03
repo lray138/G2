@@ -143,4 +143,44 @@ public function bind(callable $fn): self
         return Num::of(count($this->extract()));
     }
 
+    public function has($key): bool
+    {
+        // TODO: Implement
+    }
+
+    public function remove($key): self
+    {
+        // TODO: Implement
+    }
+
+    public function keys(): Lst
+    {
+        // TODO: Implement
+    }
+
+    public function values(): Lst
+    {
+        // TODO: Implement
+    }
+
+    public function merge(Kvm $other): self
+    {
+        // TODO: Implement
+    }
+
+    public function clear(): self
+    {
+        // TODO: Implement
+    }
+
+    public function isEmpty(): Boo
+    {
+        // TODO: Implement
+    }
+
+    public function flip(): self
+    {
+        // TODO: Implement
+    }
+
 }

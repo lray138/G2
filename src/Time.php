@@ -104,4 +104,129 @@ class Time
     {
         return $this->extract();
     }
+
+    public function diff(Time $other): \DateInterval
+    {
+        // TODO: Implement
+    }
+
+    public function isBefore(Time $other): Boo
+    {
+        // TODO: Implement
+    }
+
+    public function isAfter(Time $other): Boo
+    {
+        // TODO: Implement
+    }
+
+    public function isSame(Time $other): Boo
+    {
+        // TODO: Implement
+    }
+
+    public function toTimestamp(): Num
+    {
+        // TODO: Implement
+    }
+
+    public function getYear(): Num
+    {
+        // TODO: Implement
+    }
+
+    public function getMonth(): Num
+    {
+        // TODO: Implement
+    }
+
+    public function getDay(): Num
+    {
+        // TODO: Implement
+    }
+
+    public function getHour(): Num
+    {
+        // TODO: Implement
+    }
+
+    public function getMinute(): Num
+    {
+        // TODO: Implement
+    }
+
+    public function getSecond(): Num
+    {
+        // TODO: Implement
+    }
+
+    public function getDayOfWeek(): Num
+    {
+        // TODO: Implement
+    }
+
+    public function getDayOfYear(): Num
+    {
+        // TODO: Implement
+    }
+
+    public function isToday(): Boo
+    {
+        // TODO: Implement
+    }
+
+    public function isYesterday(): Boo
+    {
+        // TODO: Implement
+    }
+
+    public function isTomorrow(): Boo
+    {
+        // TODO: Implement
+    }
+
+    public function startOfDay(): static
+    {
+        // TODO: Implement
+    }
+
+    public function endOfDay(): static
+    {
+        // TODO: Implement
+    }
+
+    public function startOfWeek(): static
+    {
+        // TODO: Implement
+    }
+
+    public function endOfWeek(): static
+    {
+        // TODO: Implement
+    }
+
+    public function startOfMonth(): static
+    {
+        // TODO: Implement
+    }
+
+    public function endOfMonth(): static
+    {
+        // TODO: Implement
+    }
+
+    public function startOfYear(): static
+    {
+        // TODO: Implement
+    }
+
+    public function endOfYear(): static
+    {
+        // TODO: Implement
+    }
+
+    public function age(): Num
+    {
+        // TODO: Implement
+    }
 }

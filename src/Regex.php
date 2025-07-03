@@ -25,7 +25,6 @@ class Regex
         return Either::right(new static($pattern));
     }
 
-    
     public function match(string $subject): Either {
         $matches = [];
         $result = @preg_match($this->pattern, $subject, $matches);

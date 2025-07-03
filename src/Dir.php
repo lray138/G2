@@ -165,5 +165,57 @@ class Dir
         }
     }
 
+    public function exists() {
+        // TODO: Implement
+    }
+
+    public function remove() {
+        // TODO: Implement
+    }
+
+    public function copy($destination) {
+        // TODO: Implement
+    }
+
+    public function move($destination) {
+        // TODO: Implement
+    }
+
+    public function rename($newName) {
+        // TODO: Implement
+    }
+
+    public function chmod($mode) {
+        // TODO: Implement
+    }
+
+    public function chown($owner) {
+        // TODO: Implement
+    }
+
+    public function getParent() {
+        // TODO: Implement
+    }
+
+    public function isEmpty() {
+        // TODO: Implement
+    }
+
+    public function countFiles() {
+        // TODO: Implement
+    }
+
+    public function countDirs() {
+        // TODO: Implement
+    }
+
+    public function getSize() {
+        // TODO: Implement
+    }
+
+    public function touch() {
+        // TODO: Implement
+    }
+
     use \lray138\G2\Common\ExtendTrait;
 }

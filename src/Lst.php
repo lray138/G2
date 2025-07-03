@@ -209,4 +209,69 @@ public function forEach(callable $callback): self
         return Num::of(count($this->extract()));
     }
 
+    public function last(): Either
+    {
+        // TODO: Implement
+    }
+
+    public function reverse(): self
+    {
+        // TODO: Implement
+    }
+
+    public function find(callable $predicate): Either
+    {
+        // TODO: Implement
+    }
+
+    public function findIndex(callable $predicate): Either
+    {
+        // TODO: Implement
+    }
+
+    public function every(callable $predicate): Boo
+    {
+        // TODO: Implement
+    }
+
+    public function some(callable $predicate): Boo
+    {
+        // TODO: Implement
+    }
+
+    public function sort(callable $comparator = null): self
+    {
+        // TODO: Implement
+    }
+
+    public function unique(): self
+    {
+        // TODO: Implement
+    }
+
+    public function take($n): self
+    {
+        // TODO: Implement
+    }
+
+    public function drop($n): self
+    {
+        // TODO: Implement
+    }
+
+    public function slice($start, $length = null): self
+    {
+        // TODO: Implement
+    }
+
+    public function join($separator = ''): Str
+    {
+        // TODO: Implement
+    }
+
+    public function isEmpty(): Boo
+    {
+        // TODO: Implement
+    }
+
 }

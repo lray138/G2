@@ -195,4 +195,56 @@ class Str implements Monoid, Pointed
     public function toLowerCase() {
         return new static(strtolower($this->extract()));
     }
+
+    public function toUpperCase() {
+        // TODO: Implement
+    }
+
+    public function startsWith($prefix) {
+        // TODO: Implement
+    }
+
+    public function endsWith($suffix) {
+        // TODO: Implement
+    }
+
+    public function length() {
+        // TODO: Implement
+    }
+
+    public function split($delimiter) {
+        // TODO: Implement
+    }
+
+    public function reverse() {
+        // TODO: Implement
+    }
+
+    public function isEmpty() {
+        // TODO: Implement
+    }
+
+    public function repeat($times) {
+        // TODO: Implement
+    }
+
+    public function padLeft($length, $char = ' ') {
+        // TODO: Implement
+    }
+
+    public function padRight($length, $char = ' ') {
+        // TODO: Implement
+    }
+
+    public function substring($start, $length = null) {
+        // TODO: Implement
+    }
+
+    public function replaceFirst($search, $replace) {
+        // TODO: Implement
+    }
+
+    public function replaceLast($search, $replace) {
+        // TODO: Implement
+    }
 }

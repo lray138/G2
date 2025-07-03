@@ -81,4 +81,64 @@ class File
             ? Either::left("Unable to write to file: $path")
             : Either::right($this); // returns number of bytes written
     }
+
+    public function exists() {
+        // TODO: Implement
+    }
+
+    public function remove() {
+        // TODO: Implement
+    }
+
+    public function copy($destination) {
+        // TODO: Implement
+    }
+
+    public function move($destination) {
+        // TODO: Implement
+    }
+
+    public function touch() {
+        // TODO: Implement
+    }
+
+    public function isReadable() {
+        // TODO: Implement
+    }
+
+    public function isWritable() {
+        // TODO: Implement
+    }
+
+    public function isExecutable() {
+        // TODO: Implement
+    }
+
+    public function getMTime() {
+        // TODO: Implement
+    }
+
+    public function getATime() {
+        // TODO: Implement
+    }
+
+    public function getCTime() {
+        // TODO: Implement
+    }
+
+    public function getOwner() {
+        // TODO: Implement
+    }
+
+    public function getGroup() {
+        // TODO: Implement
+    }
+
+    public function getPerms() {
+        // TODO: Implement
+    }
+
+    public function getType() {
+        // TODO: Implement
+    }
 }

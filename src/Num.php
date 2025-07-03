@@ -179,4 +179,24 @@ class Num implements Monoid, Pointed
     public function __toString() {
         return (string) $this->extract();
     }
+
+    public function abs(): self
+    {
+        // TODO: Implement
+    }
+
+    public function pow($exponent): self
+    {
+        // TODO: Implement
+    }
+
+    public function min($other): self
+    {
+        // TODO: Implement
+    }
+
+    public function max($other): self
+    {
+        // TODO: Implement
+    }
 }

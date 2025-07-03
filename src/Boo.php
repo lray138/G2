@@ -88,7 +88,6 @@ class Boo implements Monoid
         return $this->extract() == true;
     }
     
-
     public function get()
     {
         return $this->extract();
@@ -98,4 +97,15 @@ class Boo implements Monoid
     {
         return $this->value;
     }
+
+    public function not(): self
+    {
+        // TODO: Implement
+    }
+
+    public function equals($other): Boo
+    {
+        // TODO: Implement
+    }
+
 }
