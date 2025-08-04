@@ -11,12 +11,13 @@ use lray138\G2\Either\Right;
 
 it('constructs a Regex with a valid pattern', function () {
     $regex = Regex::of('/\\d+/');
-    expect($regex)->toBeInstanceOf(Right::class);
+    expect($regex)->toBeInstanceOf(Regex::class);
 });
 
 it('fails to construct a Regex with an invalid pattern', function () {
-    $regex = Regex::of('/[a-z');
-    expect($regex)->toBeInstanceOf(Left::class);
+    expect(function() {
+        Regex::of('/[a-z');
+    })->toThrow(\InvalidArgumentException::class);
 });
 
 // it('returns Left if no match is found', function () {
