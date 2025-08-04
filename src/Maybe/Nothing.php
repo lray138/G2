@@ -41,4 +41,34 @@ class Nothing extends Maybe
     public function extract()
     {
     }
+
+    public function fold(callable $nothing, callable $just)
+    {
+        return $nothing();
+    }
+
+    public function isNothing(): bool
+    {
+        return true;
+    }
+
+    public function isJust(): bool
+    {
+        return false;
+    }
+
+    public function getOrThrow(string $message = 'Attempted to get value from Nothing')
+    {
+        throw new \Exception($message);
+    }
+
+    public function getOrElse($default)
+    {
+        return $default;
+    }
+
+    public function get()
+    {
+        return null;
+    }
 }

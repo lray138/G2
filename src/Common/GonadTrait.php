@@ -44,4 +44,9 @@ trait GonadTrait
     {
         return $this->extract();
     }
+
+    public function fmap(callable $f): Functor {
+        return $this->map($f);
+    }
+    
 }

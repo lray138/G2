@@ -139,6 +139,11 @@ const wrap = __NAMESPACE__ . '\wrap';
 
 function wrap($variable)
 {
+
+    if(is_callable($variable)) {
+        return $variable;
+    }
+
     if (is_object($variable)) {
         if (
             in_array(get_class($variable), [
@@ -173,7 +178,7 @@ function wrap($variable)
         "null" => "Maybe\\Nothing", // changed from None
         "expression" => "Str",
         "string" => "Str", // was Str (it's StrType to avoid confusion with functions Str)
-        "array" => "array"
+        "array" => "array",
     ];
 
     $type = getType($variable);
@@ -194,7 +199,7 @@ function wrap($variable)
 
         return \lray138\G2\Either\Right::of($variable);
     }
-
+    
     if (isset($types[$type])) {
         $result = $types[$type];
     } else {
@@ -203,6 +208,10 @@ function wrap($variable)
 
     if($type == "array" && count($variable) == 0) {
         return \lray138\G2\Lst::mempty();
+    }
+
+    if($type == "function") {
+        return $result;
     }
 
     if($type == "array") {

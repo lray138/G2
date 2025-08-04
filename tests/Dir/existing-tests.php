@@ -37,20 +37,19 @@ describe("It constructs correctly", function() {
 });
 
 it('loads children from a directory', function() {
-    $dir = Dir::maybe('/Users/lray/Sites/demo-dir')
-        ->bind(fn(Dir $d): Either => $d->getChildren())
+    $dir = Dir::maybe('/Users/lray/Sites/G2/tests/demo-dir')
+        ->bind(fn(Dir $d): Either => $d->getFiles())
         ->map(fn(Lst $lst) 
             => $lst->map(fn(File $f) => $f->getBasename()->get())->get()
         )
         ->fold(
             fn($x) => $x,
             fn($x) => $x
-        );
+        )
+        ;
 
     expect($dir)->toEqual(['file1.txt', 'file2.txt']);
 });
-
-
 
 // it('caches children and avoids redundant scanning', function() {
 //     // Simulate that scandir is called only once

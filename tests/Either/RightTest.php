@@ -13,14 +13,14 @@ it('throws an error if the constructor is accessed directly', function () {
 
 describeMonad(lray138\G2\Either\Right::class);
 
+$prop = fn($key) => fn($store) => $store["$key"];
 
-it('returns a stored property using these methods', function() {
+it('returns a stored property using these methods', function() use($prop) {
     
     expect(
         Right::of(['kvm' => 'value'])
-            ->prop('kvm')
-            ->getOrElse('default')
-            ->extract()
+            ->map($prop('kvm'))
+            ->get()
     )->toBe('value');
 
 });

@@ -101,20 +101,22 @@ class Tree implements Monoid
 
     public function filter(callable $predicate): self
     {
-        if (!$predicate($this->value)) {
-            return self::mempty();
+        // For leaf nodes, check if the value matches the predicate
+        if ($this->isLeaf()) {
+            return $predicate($this->value) ? $this : self::mempty();
+        }
+        
+        // For nodes with children, filter the children
+        $filteredChildren = [];
+        
+        foreach ($this->children as $child) {
+            $filteredChild = $child->filter($predicate);
+            if (!$filteredChild->isEmpty()) {
+                $filteredChildren[] = $filteredChild;
+            }
         }
 
-        $filteredChildren = array_filter(
-            array_map(function($child) use ($predicate) {
-                return $child->filter($predicate);
-            }, $this->children),
-            function($child) {
-                return !$child->isEmpty();
-            }
-        );
-
-        return new static($this->value, array_values($filteredChildren));
+        return new static($this->value, $filteredChildren);
     }
 
     public function reduce(callable $fn, $initial)
@@ -270,7 +272,7 @@ class Tree implements Monoid
         return $result;
     }
 
-    public function concat(Semigroup $a): Semigroup
+    public function concat($a): Semigroup
     {
         if ($a instanceof self) {
             return new static($this->value, array_merge($this->children, [$a]));

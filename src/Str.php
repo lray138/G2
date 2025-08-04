@@ -19,14 +19,23 @@ class Str implements Monoid, Pointed
         $this->value = $value;
     }
 
-    
     public static function of($value)
     {
-        if(!is_string($value)) {
-            throw new \InvalidArgumentException('Str::of expects a string');
+        $value = unwrap($value);
+        
+        if (is_object($value) && !method_exists($value, '__toString')) {
+            throw new \InvalidArgumentException('Object must implement __toString().');
         }
 
-        return new static($value);
+        if (is_array($value)) {
+            throw new \InvalidArgumentException('Cannot cast array to string.');
+        }
+
+        try {
+            return new static((string) $value);
+        } catch (\Exception $e) {
+            throw new \InvalidArgumentException("Invalid value for Str::of: " . $e->getMessage());
+        }
     }
 
     public static function mempty()

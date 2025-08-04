@@ -94,12 +94,39 @@ class File
         // TODO: Implement
     }
 
-    public function remove() {
-        // TODO: Implement
+    public function delete() {
+        if (!file_exists($this->path)) {
+            return \lray138\G2\Either::left('File does not exist: ' . $this->path);
+        }
+        if (@unlink($this->path)) {
+            return \lray138\G2\Either::right(true);
+        } else {
+            return \lray138\G2\Either::left('Failed to remove file: ' . $this->path);
+        }
     }
 
     public function copy($destination) {
-        // TODO: Implement
+        // Accept Dir, File, or string
+        if ($destination instanceof \lray138\G2\Dir) {
+            $destPath = rtrim($destination->getPath(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . basename($this->path);
+        } elseif ($destination instanceof self) {
+            $destPath = $destination->getPath();
+        } elseif (is_string($destination)) {
+            if (is_dir($destination)) {
+                $destPath = rtrim($destination, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . basename($this->path);
+            } else {
+                $destPath = $destination;
+            }
+        } else {
+            return \lray138\G2\Either::left('Invalid destination type');
+        }
+
+        // Attempt to copy
+        if (@copy($this->path, $destPath)) {
+            return \lray138\G2\Either::right(self::of($destPath));
+        } else {
+            return \lray138\G2\Either::left('Failed to copy file');
+        }
     }
 
     public function move($destination) {
@@ -148,5 +175,10 @@ class File
 
     public function getType() {
         // TODO: Implement
+    }
+
+    public function __toString()
+    {
+        return $this->path;
     }
 }

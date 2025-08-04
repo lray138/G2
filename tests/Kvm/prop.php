@@ -6,12 +6,13 @@ use lray138\G2\{
     Kvm,
     Num,
     Str,
-    Boo
+    Boo,
+    Maybe\Nothing
 };
 
 use function lray138\G2\identity;
 
-it('returns "prop" returns Either::right vs Either::left', function() {
+it('returns "prop" returns appropriate type', function() {
 
     $kvm = Kvm::of([
         'a' => 1,
@@ -19,11 +20,10 @@ it('returns "prop" returns Either::right vs Either::left', function() {
         'c' => false
     ]);
 
-    expect($kvm->prop('a'))->toBeInstanceOf(Right::class);
-    expect($kvm->prop('z'))->toBeInstanceOf(Left::class);
-
-    expect($kvm->prop('a')->get())->toBeInstanceOf(Num::class);
-    expect($kvm->prop('b')->get())->toBeInstanceOf(Str::class);
-    expect($kvm->prop('c')->get())->toBeInstanceOf(Boo::class);
+    expect($kvm->prop('a'))->toBeInstanceOf(Num::class);
+    expect($kvm->prop('b'))->toBeInstanceOf(Str::class);
+    expect($kvm->prop('c'))->toBeInstanceOf(Boo::class);
+    expect($kvm->prop('asdf'))->toBeInstanceOf(Nothing::class);
+    expect($kvm->prop('z')->get())->toBe(null);
 
 });

@@ -14,7 +14,7 @@ use GuzzleHttp\Promise\Create;
 it('Task::get retrieves a post', function () {
     $task = Task::get('https://jsonplaceholder.typicode.com/posts/1')
         ->decodeJson()
-        ->map(fn(Kvm $Kvm) => $Kvm->prop('id')->extract());
+        ->map(fn(Kvm $Kvm) => $Kvm->prop('id'));
 
     expect($task->run()->get())->toBe(1);
 });
@@ -28,7 +28,7 @@ it('Task::post creates a new post (simulated)', function () {
 
     $task = Task::post('https://jsonplaceholder.typicode.com/posts', $data)
         ->decodeJson()
-        ->map(fn(Kvm $Kvm) => $Kvm->prop('title')->get());
+        ->map(fn(Kvm $Kvm) => $Kvm->prop('title'));
 
     expect($task->run())->toBeInstanceOf(Str::class);
     expect($task->run()->get())->toBe('foo');
@@ -46,7 +46,7 @@ it('Task::put updates a post (simulated)', function () {
         'json' => $data
     ])
         ->decodeJson()
-        ->map(fn(Kvm $Kvm) => $Kvm->prop('title')->fold(fn() => '', fn($x) => $x->get()));
+        ->map(fn(Kvm $Kvm) => $Kvm->prop('title')->get());
 
     expect($task->run())->toBe('updated');
 });
@@ -56,7 +56,7 @@ it('Task::patch partially updates a post (simulated)', function () {
         'json' => ['title' => 'patched']
     ])
         ->decodeJson()
-        ->map(fn(Kvm $Kvm) => $Kvm->prop('title')->fold(fn($x) => $x, fn($x) => $x->get()));
+        ->map(fn(Kvm $Kvm) => $Kvm->maybeProp('title')->fold(fn($x) => $x, fn($x) => $x->get()));
 
     expect($task->run())->toBe('patched');
 });

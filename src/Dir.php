@@ -155,7 +155,7 @@ class Dir
             );
             foreach ($iterator as $fileinfo) {
                 if ($fileinfo->isFile()) {
-                    $files[] = File::of($fileinfo->getRealPath())->get();
+                    $files[] = File::of($fileinfo->getRealPath());
                 }
             }
 

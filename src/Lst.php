@@ -274,4 +274,21 @@ public function forEach(callable $callback): self
         // TODO: Implement
     }
 
+    public function zip($other): self
+    {
+        $a = $this->extract();
+        if ($other instanceof self) {
+            $b = $other->extract();
+        } elseif (is_array($other)) {
+            $b = $other;
+        } else {
+            throw new \InvalidArgumentException('zip expects a Lst or array');
+        }
+        $len = min(count($a), count($b));
+        $zipped = [];
+        for ($i = 0; $i < $len; $i++) {
+            $zipped[] = [$a[$i], $b[$i]];
+        }
+        return new self($zipped);
+    }
 }

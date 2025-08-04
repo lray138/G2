@@ -40,4 +40,34 @@ class Just extends Maybe
     {
         return $this->value;
     }
+
+    public function fold(callable $nothing, callable $just)
+    {
+        return $just($this->extract());
+    }
+
+    public function isNothing(): bool
+    {
+        return false;
+    }
+
+    public function isJust(): bool
+    {
+        return true;
+    }
+
+    public function getOrThrow(string $message = 'Attempted to get value from Nothing')
+    {
+        return $this->extract();
+    }
+
+    public function getOrElse($default)
+    {
+        return $this->extract();
+    }
+
+    public function get()
+    {
+        return $this->extract();
+    }
 }

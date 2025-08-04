@@ -19,8 +19,50 @@ abstract class Maybe implements Monad
         return Just::of($value);
     }
 
-    public static function nothing($value = null)
+    public static function nothing()
     {
-        return Nothing::of($value);
+        return Nothing::unit();
     }
+
+    /**
+     * Create a Maybe containing null as a value (not absence)
+     */
+    public static function justNull()
+    {
+        return Just::of(null);
+    }
+
+    /**
+     * Check if this Maybe represents absence (Nothing)
+     */
+    abstract public function isNothing(): bool;
+
+    /**
+     * Check if this Maybe contains a value (Just)
+     */
+    abstract public function isJust(): bool;
+
+    /**
+     * Get the contained value or throw an exception if Nothing
+     */
+    abstract public function getOrThrow(string $message = 'Attempted to get value from Nothing');
+
+    /**
+     * Get the contained value or return default if Nothing
+     */
+    abstract public function getOrElse($default);
+
+    /**
+     * Get the contained value (returns null for Nothing)
+     */
+    abstract public function get();
+
+    /**
+     * Fold (catamorphism) - extract a value by providing callbacks for both cases
+     * 
+     * @param callable $nothing Case for when Maybe is Nothing
+     * @param callable $just Case for when Maybe is Just
+     * @return mixed
+     */
+    abstract public function fold(callable $nothing, callable $just);
 }
