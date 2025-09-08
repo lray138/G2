@@ -70,4 +70,10 @@ class Just extends Maybe
     {
         return $this->extract();
     }
+
+    public function tap(callable $fn): self
+    {
+        $fn($this->extract());
+        return $this;
+    }
 }

@@ -5,7 +5,7 @@ namespace lray138\G2;
 use FunctionalPHP\FantasyLand\{Monoid, Semigroup};
 use lray138\G2\Either;
 use lray138\G2\Common\Tappable;
-use function lray138\G2\dump;
+use function lray138\G2\{wrap, dump};
 
 class Lst implements Monoid
 {
@@ -71,6 +71,11 @@ class Lst implements Monoid
         return new static(array_map($fn, $this->value));
     }
 
+    public function wrapMap(callable $fn): self
+    {
+        return new static(array_map($fn, array_map("\lray138\G2\wrap", $this->value)));
+    }
+
     public function bind(callable $fn): self
     {
         $results = array_map($fn, $this->value); // results in array of Lst
@@ -98,7 +103,7 @@ class Lst implements Monoid
         $first = reset($this->value);
 
         return $first !== false
-            ? Either::right(wrap($first))
+            ? Either::right($first) // wrapping was causing problems and this is where better testing and understanding up front avoids these issues.  Seek assistance.
             : Either::left("Lst::head() failed — list is empty");
     }
 
@@ -115,7 +120,7 @@ class Lst implements Monoid
         return Either::right(new static($sliced));
     }
 
-    public function filter(callable $predicate): self
+    public function filter(?callable $predicate = null): self
     {
         return new static(array_values(
                 array_filter($this->value, $predicate)
@@ -164,7 +169,6 @@ public function forEach(callable $callback): self
 }
 
 
-
     public function concat(Semigroup $a): Semigroup
     {
         if ($a instanceof self) {
@@ -211,67 +215,126 @@ public function forEach(callable $callback): self
 
     public function last(): Either
     {
+        trigger_error('Lst::last() is not yet implemented (TODO)', E_USER_WARNING);
         // TODO: Implement
+        return Either::left('Method not implemented');
     }
 
     public function reverse(): self
     {
+        trigger_error('Lst::reverse() is not yet implemented (TODO)', E_USER_WARNING);
         // TODO: Implement
+        return $this;
     }
 
     public function find(callable $predicate): Either
     {
+        trigger_error('Lst::find() is not yet implemented (TODO)', E_USER_WARNING);
         // TODO: Implement
+        return Either::left('Method not implemented');
     }
 
     public function findIndex(callable $predicate): Either
     {
+        trigger_error('Lst::findIndex() is not yet implemented (TODO)', E_USER_WARNING);
         // TODO: Implement
+        return Either::left('Method not implemented');
     }
 
     public function every(callable $predicate): Boo
     {
+        trigger_error('Lst::every() is not yet implemented (TODO)', E_USER_WARNING);
         // TODO: Implement
+        return Boo::of(false);
     }
 
     public function some(callable $predicate): Boo
     {
+        trigger_error('Lst::some() is not yet implemented (TODO)', E_USER_WARNING);
         // TODO: Implement
+        return Boo::of(false);
     }
 
     public function sort(callable $comparator = null): self
     {
+        trigger_error('Lst::sort() is not yet implemented (TODO)', E_USER_WARNING);
         // TODO: Implement
+        return $this;
     }
 
     public function unique(): self
     {
-        // TODO: Implement
+        $array = $this->extract();
+        $unique = [];
+        $seen = [];
+        
+        foreach ($array as $value) {
+            // For objects, use spl_object_hash for comparison
+            if (is_object($value)) {
+                $key = spl_object_hash($value);
+            } else {
+                // For other types, use serialization for comparison
+                $key = serialize($value);
+            }
+            
+            if (!isset($seen[$key])) {
+                $seen[$key] = true;
+                $unique[] = $value;
+            }
+        }
+        
+        return new static($unique);
     }
 
     public function take($n): self
     {
+        trigger_error('Lst::take() is not yet implemented (TODO)', E_USER_WARNING);
         // TODO: Implement
+        return $this;
     }
 
     public function drop($n): self
     {
+        trigger_error('Lst::drop() is not yet implemented (TODO)', E_USER_WARNING);
         // TODO: Implement
+        return $this;
     }
 
     public function slice($start, $length = null): self
     {
+        trigger_error('Lst::slice() is not yet implemented (TODO)', E_USER_WARNING);
         // TODO: Implement
+        return $this;
     }
 
     public function join($separator = ''): Str
     {
-        // TODO: Implement
+        $separator = unwrap($separator);
+        return Str::of(implode($separator, $this->extract()));
+    }
+
+    public function chunk($size): self
+    {
+        $size = unwrap($size);
+        if ($size <= 0) {
+            return self::mempty();
+        }
+        
+        $array = $this->extract();
+        $chunks = [];
+        
+        for ($i = 0; $i < count($array); $i += $size) {
+            $chunks[] = array_slice($array, $i, $size);
+        }
+        
+        return new self($chunks);
     }
 
     public function isEmpty(): Boo
     {
+        trigger_error('Lst::isEmpty() is not yet implemented (TODO)', E_USER_WARNING);
         // TODO: Implement
+        return Boo::of(false);
     }
 
     public function zip($other): self

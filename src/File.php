@@ -47,6 +47,39 @@ class File
         return Result::err(["message" => "File does not exist: $path", "input" => $path]);
     }
 
+    public static function create($path, $contents = '') {
+        $path = unwrap($path);
+        $contents = unwrap($contents);
+        
+        // Check if file already exists
+        if (file_exists($path)) {
+            return Result::err([
+                "message" => "File already exists: $path",
+                "input" => $path
+            ]);
+        }
+        
+        // Ensure directory exists
+        $dir = dirname($path);
+        if (!is_dir($dir) && !@mkdir($dir, 0777, true)) {
+            return Result::err([
+                "message" => "Failed to create directory: $dir",
+                "input" => $path
+            ]);
+        }
+        
+        // Create the file with contents
+        $result = @file_put_contents($path, $contents);
+        if ($result === false) {
+            return Result::err([
+                "message" => "Failed to create file: $path",
+                "input" => $path
+            ]);
+        }
+        
+        return Result::ok(new static($path));
+    }
+
     public function getBasename(): Str {
         return Str::of(basename($this->path));
     }
@@ -123,9 +156,13 @@ class File
 
         // Attempt to copy
         if (@copy($this->path, $destPath)) {
-            return \lray138\G2\Either::right(self::of($destPath));
+            return \lray138\G2\Result::ok(Kvm::of([
+                "message" => "File copied successfully",
+                "from" => $this->getPath(),
+                "to" => $destPath,
+            ]));
         } else {
-            return \lray138\G2\Either::left('Failed to copy file');
+            return \lray138\G2\Result::err('Failed to copy file');
         }
     }
 

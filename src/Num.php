@@ -199,4 +199,9 @@ class Num implements Monoid, Pointed
     {
         // TODO: Implement
     }
+
+    public function toStr(): Str
+    {
+        return Str::of($this->value);
+    }
 }

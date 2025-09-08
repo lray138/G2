@@ -19,6 +19,8 @@ class Str implements Monoid, Pointed
         $this->value = $value;
     }
 
+    public const of = __CLASS__ . '::of';
+
     public static function of($value)
     {
         $value = unwrap($value);
@@ -186,7 +188,7 @@ class Str implements Monoid, Pointed
         return Either::right(Str::of(substr($this->extract(), 0, $pos)));
     }
 
-    public function afterFirst($needle): Either {
+    public function afterFirst($needle, $keepNeedle = false): Either {
         $haystack = $this->extract();
         $needle = unwrap($needle);
 
@@ -198,7 +200,7 @@ class Str implements Monoid, Pointed
 
         $start = $pos + strlen($needle);
 
-        return Either::right(Str::of(substr($haystack, $start)));
+        return Either::right(Str::of($keepNeedle ? substr($haystack, $start -1) : substr($haystack, $start)));
     }
 
     public function toLowerCase() {

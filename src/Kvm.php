@@ -2,7 +2,7 @@
 
 namespace lray138\G2;
 
-use FunctionalPHP\FantasyLand\{Monoid, Semigroup};
+use FunctionalPHP\FantasyLand\{Apply, Functor, Monoid, Semigroup};
 use lray138\G2\Either;
 use lray138\G2\Common\{
     GetPropTrait,
@@ -11,7 +11,7 @@ use lray138\G2\Common\{
 
 use function lray138\G2\wrap;
 
-class Kvm implements Monoid
+class Kvm implements Apply, Functor, Monoid
 {
     private $value;
 
@@ -39,7 +39,7 @@ class Kvm implements Monoid
         return new static($data);
     }
 
-    public static function either($data)
+    public static function either($data): Either
     {
         if (is_null($data)) {
             return Either::left("Kvm::of requires a valid associative array");
@@ -55,7 +55,7 @@ class Kvm implements Monoid
             $data = [$data];
         }
 
-        return new static($data);
+        return Either::right(new static($data));
     }
 
     public static function mempty()
@@ -84,7 +84,7 @@ class Kvm implements Monoid
     use GetPropTrait;
     use GetPropsTrait;
 
-public function map(callable $fn): self
+public function map(callable $fn): Functor
     {
         $mapped = [];
         foreach ($this->value as $key => $value) {
@@ -92,6 +92,24 @@ public function map(callable $fn): self
         }
         return new static($mapped);
     }
+
+    public function ap(Apply $other): Apply
+    {
+        die("HERE");
+        if (!$other instanceof self) {
+            throw new \InvalidArgumentException('Kvm::ap expects a Kvm');
+        }
+        
+        // Apply the function to the whole context (entire Kvm)
+        $value = $this->extract();
+        if (is_callable($value)) {
+            return new static($value($other));
+        }
+        
+        // If not callable, return the other Kvm unchanged
+        return $other;
+    }
+
 
 public function bind(callable $fn): self
 {
@@ -119,6 +137,7 @@ public function bind(callable $fn): self
 
     public function set($key, $value) {
         $new = $this->extract();
+        $key = unwrap($key);
         $new[$key] = $value;
         return new static($new);
     }

@@ -26,6 +26,8 @@ class Boo implements Monoid
         return new Boo(false, $operation);
     }
 
+    public const of = __CLASS__ . '::of';
+
     /**
      * Creates a new Boo instance from a value.
      * 
@@ -106,6 +108,11 @@ class Boo implements Monoid
     public function extract()
     {
         return $this->value;
+    }
+
+    public function fold(callable $onFalse, callable $onTrue)
+    {
+        return $this->extract() ? $onTrue() : $onFalse();
     }
 
     public function not(): self

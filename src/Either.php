@@ -31,4 +31,27 @@ abstract class Either implements Monad
 
     }
 
+    /**
+     * Map over the contained value (only applies to Right)
+     * 
+     * @param callable $f Function to apply to the value
+     * @return Either
+     */
+    abstract public function map(callable $f): Either;
+
+    /**
+     * Bind (flatMap) - chain computations that may fail
+     * 
+     * @param callable $f Function that returns an Either
+     * @return Either
+     */
+    abstract public function bind(callable $f): Either;
+
+    /**
+     * Extract the contained value
+     * 
+     * @return mixed
+     */
+    abstract public function extract();
+
 }

@@ -9,7 +9,7 @@ use function lray138\G2\{
     unwrap
 };
 
-use lray138\G2\Maybe;
+use lray138\G2\{Either, Maybe};
 
 trait GetPropTrait
 {
@@ -56,6 +56,23 @@ trait GetPropTrait
     public function mProp($key): Maybe
     {
        return $this->maybeProp($key);
+    }
+
+    public function eitherProp($key): Either
+    {
+        $stored = unwrap($this->extract());
+        $key = unwrap($key);
+
+        if (!isset($stored[$key])) {
+            return Either::left("prop '$key' not found");
+        }
+
+        return Either::right(wrap($stored[$key]));
+    }
+
+    public function eProp($key): Either
+    {
+        return $this->eitherProp($key);
     }
 
     public function pluck($key) {

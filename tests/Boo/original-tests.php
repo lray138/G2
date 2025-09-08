@@ -65,3 +65,72 @@ it('mempty returns correct identity values', function () {
     expect($andMempty->extract())->toBe(true);
     expect($orMempty->extract())->toBe(false);
 });
+
+it('fold calls onTrue when value is true', function () {
+    $boo = Boo::of(true);
+    
+    $result = $boo->fold(
+        fn() => 'false case',
+        fn() => 'true case'
+    );
+    
+    expect($result)->toBe('true case');
+});
+
+it('fold calls onFalse when value is false', function () {
+    $boo = Boo::of(false);
+    
+    $result = $boo->fold(
+        fn() => 'false case',
+        fn() => 'true case'
+    );
+    
+    expect($result)->toBe('false case');
+});
+
+it('fold can return different types', function () {
+    $trueBoo = Boo::of(true);
+    $falseBoo = Boo::of(false);
+    
+    $trueResult = $trueBoo->fold(
+        fn() => 0,
+        fn() => 42
+    );
+    
+    $falseResult = $falseBoo->fold(
+        fn() => 'error',
+        fn() => 'success'
+    );
+    
+    expect($trueResult)->toBe(42);
+    expect($falseResult)->toBe('error');
+});
+
+it('fold can perform side effects', function () {
+    $trueBoo = Boo::of(true);
+    $falseBoo = Boo::of(false);
+    
+    $trueResult = $trueBoo->fold(
+        fn() => 'logged: false',
+        fn() => 'logged: true'
+    );
+    
+    $falseResult = $falseBoo->fold(
+        fn() => 'logged: false',
+        fn() => 'logged: true'
+    );
+    
+    expect($trueResult)->toBe('logged: true');
+    expect($falseResult)->toBe('logged: false');
+});
+
+it('fold works with complex return values', function () {
+    $boo = Boo::of(true);
+    
+    $result = $boo->fold(
+        fn() => ['status' => 'failed', 'code' => 500],
+        fn() => ['status' => 'success', 'code' => 200]
+    );
+    
+    expect($result)->toBe(['status' => 'success', 'code' => 200]);
+});

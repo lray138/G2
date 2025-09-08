@@ -71,4 +71,14 @@ class Nothing extends Maybe
     {
         return null;
     }
+
+    public function __toString() {
+        return '';
+    }
+
+    public function tap(callable $fn): self
+    {
+        // Do nothing for Nothing, just return the Maybe unchanged
+        return $this;
+    }
 }

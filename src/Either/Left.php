@@ -24,12 +24,12 @@ final class Left extends Either implements Semigroup
         return $this;
     }
 
-    public function map(callable $f): Left
+    public function map(callable $f): Either
     {
         return $this;
     }
 
-    public function bind(callable $a): Left
+    public function bind(callable $f): Either
     {
         return $this;
     }

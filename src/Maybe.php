@@ -65,4 +65,12 @@ abstract class Maybe implements Monad
      * @return mixed
      */
     abstract public function fold(callable $nothing, callable $just);
+
+    /**
+     * Tap - execute a callback function on the contained value (if it exists) and return the Maybe unchanged
+     * 
+     * @param callable $fn Callback function to execute
+     * @return self
+     */
+    abstract public function tap(callable $fn): self;
 }

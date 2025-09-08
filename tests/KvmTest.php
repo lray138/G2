@@ -8,3 +8,4 @@ require "Kvm/filter.php";
 require "Kvm/reduce.php";
 require "Kvm/prop.php";
 require "Kvm/props.php";
+require "Kvm/ap.php";
