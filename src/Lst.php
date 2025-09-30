@@ -300,6 +300,11 @@ public function forEach(callable $callback): self
         return $this;
     }
 
+    public function getOrElse()
+    {
+        return $this->extract();
+    }
+
     public function slice($start, $length = null): self
     {
         trigger_error('Lst::slice() is not yet implemented (TODO)', E_USER_WARNING);

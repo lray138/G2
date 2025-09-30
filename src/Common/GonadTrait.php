@@ -8,7 +8,7 @@ trait GonadTrait
 {
     protected $value;
 
-    public const of  = __CLASS__ . '::of';
+    // public const of  = __CLASS__ . '::of';
 
     private function __construct($value)
     {

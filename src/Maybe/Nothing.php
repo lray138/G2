@@ -3,9 +3,9 @@
 namespace lray138\G2\Maybe;
 
 use lray138\G2\Maybe;
-use FunctionalPHP\FantasyLand\Apply;
+use FunctionalPHP\FantasyLand\{Apply, Semigroup};
 
-class Nothing extends Maybe
+class Nothing extends Maybe implements Semigroup
 {
     public const of  = __CLASS__ . '::of';
 
@@ -23,12 +23,22 @@ class Nothing extends Maybe
         return new static();
     }
 
+    public function reduce()
+    {
+        return $this;
+    }
+
     public function ap(Apply $a): Apply
     {
         return $this;
     }
 
     public function map(callable $a): Nothing
+    {
+        return $this;
+    }
+
+    public function concat(Semigroup $s): Semigroup
     {
         return $this;
     }
