@@ -103,8 +103,36 @@ class Lst implements Monoid
         $first = reset($this->value);
 
         return $first !== false
+            ? $first // love the seek assistance comment that you ignored until Jan 12 16:05 (or later)
+            : null;
+    }
+
+    public function ehead(): Either
+    {
+        if (empty($this->extract())) {
+            return Either::left("Lst::head() failed — list is empty");
+        }
+
+        // reset() returns the first element value, or false if empty
+        $first = reset($this->value);
+
+        return $first !== false
             ? Either::right($first) // wrapping was causing problems and this is where better testing and understanding up front avoids these issues.  Seek assistance.
             : Either::left("Lst::head() failed — list is empty");
+    }
+
+    public function mhead(): Maybe
+    {
+        if (empty($this->extract())) {
+            return Maybe::nothing();
+        }
+
+        // reset() returns the first element value, or false if empty
+        $first = reset($this->value);
+
+        return $first !== false
+            ? Maybe::just($first) // wrapping was causing problems and this is where better testing and understanding up front avoids these issues.  Seek assistance.
+            : Maybe::nothing();
     }
 
     public function tail(): Either
