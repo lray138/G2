@@ -93,7 +93,7 @@ class Lst implements Monoid
         return new static($flattened);
     }
 
-    public function head(): Either
+    public function head()
     {
         if (empty($this->extract())) {
             return Either::left("Lst::head() failed — list is empty");
