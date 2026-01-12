@@ -35,7 +35,7 @@ trait GetPropTrait
         $key = unwrap($key);
 
         if (!isset($stored[$key])) {
-            return Maybe::nothing();
+            return null;
         }
 
         return wrap($stored[$key]);

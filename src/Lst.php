@@ -96,7 +96,7 @@ class Lst implements Monoid
     public function head()
     {
         if (empty($this->extract())) {
-            return Either::left("Lst::head() failed — list is empty");
+            return null;
         }
 
         // reset() returns the first element value, or false if empty
