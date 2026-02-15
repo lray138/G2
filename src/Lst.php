@@ -103,7 +103,8 @@ class Lst implements Monoid
         $first = reset($this->value);
 
         return $first !== false
-            ? $first // love the seek assistance comment that you ignored until Jan 12 16:05 (or later)
+            ? wrap($first) // love the seek assistance comment that you ignored until Jan 12 16:05 (or later)
+                     // Feb 15, 2026 - I wonder if 'later' is insinuating I haven't got help yet.. jeez
             : null;
     }
 
@@ -131,7 +132,7 @@ class Lst implements Monoid
         $first = reset($this->value);
 
         return $first !== false
-            ? Maybe::just($first) // wrapping was causing problems and this is where better testing and understanding up front avoids these issues.  Seek assistance.
+            ? Maybe::just(wrap($first)) // wrapping was causing problems and this is where better testing and understanding up front avoids these issues.  Seek assistance.
             : Maybe::nothing();
     }
 

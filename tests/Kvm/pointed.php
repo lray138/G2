@@ -10,9 +10,4 @@ it('constructs properly', function () {
 
     expect(Kvm::either(['a']))->toBeInstanceOf(Left::class);
 
-        // expect(Dir::of("/Users/lray/Sites")
-        //     ->exists()
-        //     ->extract()
-        // )->toBe(true);
-
 });
