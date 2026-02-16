@@ -18,22 +18,18 @@ trait GetPropsTrait
      * @param array|string[] $keys
      * @return array Associative array of key => value
      */
-    public function props($keys): Kvm
+    public function props($keys): self
     {
         $keys = unwrap($keys);
-
         $result = [];
+
         foreach ($keys as $key) {
-            $result[$key] = $this->prop($key);
+            $result[$key] = array_key_exists($key, $this->value)
+                ? $this->value[$key]
+                : null;
         }
 
-        return Kvm::of($result);
-    }
-
-    // don't like this anymore actually
-    public function keys($keys): Kvm 
-    {
-        return $this->props($keys);
+        return self::of($result);
     }
 
 }
