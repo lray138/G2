@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace lray138\G2\Common;
 
+use lray138\G2\Nil;
+
 use function lray138\G2\{
     wrap,
     unwrap
@@ -35,7 +37,7 @@ trait GetPropTrait
         $key = unwrap($key);
 
         if (!isset($stored[$key])) {
-            return null;
+            return Nil::unit();
         }
 
         return wrap($stored[$key]);

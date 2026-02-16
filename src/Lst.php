@@ -136,17 +136,20 @@ class Lst implements Monoid
             : Maybe::nothing();
     }
 
-    public function tail(): Either
+    public function tail(): ?self 
     {
         $value = $this->extract();
 
-        if (empty($value) || count($value) == 1) {
-            return Either::left("Lst::tail() failed — list is empty");
+        if (count($value) < 2) {
+            return null;
         }
 
-        $sliced = array_slice($this->value, 1);
+        return new static(array_slice($value, 1));
+    }
 
-        return Either::right(new static($sliced));
+    public function mtail(): Maybe
+    {
+        return Maybe::of($this->tail());
     }
 
     public function filter(?callable $predicate = null): self

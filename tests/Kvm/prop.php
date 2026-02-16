@@ -7,6 +7,7 @@ use lray138\G2\{
     Num,
     Str,
     Boo,
+    Nil,
     Maybe\Just,
     Maybe\Nothing
 };
@@ -24,9 +25,7 @@ it('returns "prop" returns appropriate type', function() {
     expect($kvm->prop('a'))->toBeInstanceOf(Num::class);
     expect($kvm->prop('b'))->toBeInstanceOf(Str::class);
     expect($kvm->prop('c'))->toBeInstanceOf(Boo::class);
-    expect($kvm->prop('asdf'))->toBe(null);
-    expect($kvm->prop('z'))->toBe(null);
-
+    expect($kvm->prop('d'))->toBeInstanceOf(Nil::class);
 });
 
 it('returns "mprop" returns appropriate type', function() {
@@ -47,3 +46,4 @@ it('returns "mprop" returns appropriate type', function() {
     expect($kvm->mprop('z'))->toBeInstanceOf(Nothing::class);
 
 });
+

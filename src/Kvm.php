@@ -202,4 +202,12 @@ public function bind(callable $fn): self
         // TODO: Implement
     }
 
+    public function raw(string $key)
+{
+    return array_key_exists($key, $this->value)
+        ? $this->value[$key]
+        : null;
+}
+
+
 }

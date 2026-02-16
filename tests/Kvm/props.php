@@ -5,6 +5,7 @@ use lray138\G2\{
     Either\Right,
     Kvm,
     Num,
+    Boo,
     Maybe\Nothing
 };
 
@@ -21,6 +22,6 @@ it('returns "props" returns Either::right vs Either::left', function() {
     $ps = $kvm->props(['a', 'b']);
  
     expect($ps->prop('a'))->toBeInstanceOf(Num::class);
-    expect($ps->prop('c'))->toBeInstanceOf(Nothing::class);
+    expect($ps->prop('c'))->toBe(null);
 
 });
