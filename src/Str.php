@@ -104,24 +104,26 @@ class Str implements Monoid, Pointed
         return new self($f($this->extract()));
     }
 
-    public function bind(callable $f): static
-    {
-        $result = $f($this->extract());
+    // no more bind
+    // public function bind(callable $f): static
+    // {
+    //     $result = $f($this->extract());
 
-        if (!($result instanceof static)) {
-            throw new \LogicException(sprintf(
-                'bind() must return an instance of %s, got %s',
-                static::class,
-                is_object($result) ? get_class($result) : gettype($result)
-            ));
-        }
+    //     if (!($result instanceof static)) {
+    //         throw new \LogicException(sprintf(
+    //             'bind() must return an instance of %s, got %s',
+    //             static::class,
+    //             is_object($result) ? get_class($result) : gettype($result)
+    //         ));
+    //     }
 
-        return $result;
-    }
+    //     return $result;
+    // }
 
-    public function bindTo(callable $f) {
-        return $f($this->extract());
-    }
+    // more minsunderstanding
+    // public function bindTo(callable $f) {
+    //     return $f($this->extract());
+    // }
 
     public function get()
     {
@@ -133,30 +135,30 @@ class Str implements Monoid, Pointed
         return $this->value;
     }
 
+    public function unwrap()
+    {
+        return $this->value();
+    }
+
     use \lray138\G2\Common\ExtendTrait;
 
     public function __toString() {
-        return $this->extract();
+        return $this->unwrap();
     }
 
-    public function explode($delimiter): Either {
-
+    public function explode($delimiter): Lst {
         $delimiter = unwrap($delimiter);
-
-        if ($delimiter === '') {
-            return Either::left("Delimiter must not be empty");
-        }
-
-        if (strpos($this->extract(), $delimiter) === false) {
-            return Either::left("Delimiter not found in string");
-        }
-
-        return Either::right(Lst::of(explode($delimiter, $this->extract())));
+        return Lst::of(explode($delimiter, $this->extract()));
     }
 
-    public function trim() {
-		return new static(trim($this->extract()));
-	}
+    public function trim(?string $character_mask = null): Str
+    {
+        return Str::of(
+            $character_mask === null
+                ? trim($this->value)
+                : trim($this->value, $character_mask)
+        );
+    }
 
     public function contains($needle): Boo {
         $n = unwrap($needle);

@@ -13,7 +13,12 @@ final class Nil
         return self::$instance ??= new self();
     }
 
-    public function value(): null
+    public function unwrap(): null
+    {
+        return null;
+    }
+
+    public function get(): mixed
     {
         return null;
     }
@@ -27,4 +32,27 @@ final class Nil
     {
         return true;
     }
+
+    public function getOrElse(mixed $value): mixed
+    {
+        return $value;
+    }
+
+    public function getOrCall(callable $fn): mixed
+    {
+        return $fn();
+    }
+
+    public function map() {
+        return $this;
+    }
+
+    public function bind() {
+        return $this;
+    }
+
+    public function ap() {
+        return $this;
+    }
+
 }

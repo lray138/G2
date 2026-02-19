@@ -29,34 +29,34 @@ it('concat works', function () {
     expect($s->extract())->toBe('Hello World!');
 });
 
+// leaving to show how far gone you can get without proper supervision...
+// it('satisfies the Left Identity law for Str', function () {
+//     $value = "Hello";
+//     $f = fn($x) => Str::of(strtoupper($x));
 
-it('satisfies the Left Identity law for Str', function () {
-    $value = "Hello";
-    $f = fn($x) => Str::of(strtoupper($x));
+//     $bound = Str::of($value)->bind($f);
+//     $direct = $f($value);
 
-    $bound = Str::of($value)->bind($f);
-    $direct = $f($value);
+//     expect($bound->extract())->toBe($direct->extract());
+// });
 
-    expect($bound->extract())->toBe($direct->extract());
-});
+// it('satisfies the Right Identity law for Str', function () {
+//     $m = Str::of("World");
+//     $bound = $m->bind(fn($x) => Str::of($x));
 
-it('satisfies the Right Identity law for Str', function () {
-    $m = Str::of("World");
-    $bound = $m->bind(fn($x) => Str::of($x));
+//     expect($bound->extract())->toBe($m->extract());
+// });
 
-    expect($bound->extract())->toBe($m->extract());
-});
+// it('satisfies the Associativity law for Str', function () {
+//     $m = Str::of("chain");
+//     $f = fn($x) => Str::of(strtoupper($x));
+//     $g = fn($x) => Str::of($x . "!");
 
-it('satisfies the Associativity law for Str', function () {
-    $m = Str::of("chain");
-    $f = fn($x) => Str::of(strtoupper($x));
-    $g = fn($x) => Str::of($x . "!");
+//     $left = $m->bind($f)->bind($g);
+//     $right = $m->bind(fn($x) => $f($x)->bind($g));
 
-    $left = $m->bind($f)->bind($g);
-    $right = $m->bind(fn($x) => $f($x)->bind($g));
-
-    expect($left->extract())->toBe($right->extract());
-});
+//     expect($left->extract())->toBe($right->extract());
+// });
 
 it('satisfies the Map Law for Str', function () {
     $value = "hi";
@@ -68,12 +68,51 @@ it('satisfies the Map Law for Str', function () {
     expect($mapped->extract())->toBe($expected->extract());
 });
 
-it('ensures map is consistent with bind for Str', function () {
-    $f = fn($x) => strtoupper($x);
-    $m = Str::of("test");
+// it('ensures map is consistent with bind for Str', function () {
+//     $f = fn($x) => strtoupper($x);
+//     $m = Str::of("test");
 
-    $mapResult = $m->map($f);
-    $bindResult = $m->bind(fn($x) => Str::of($f($x)));
+//     $mapResult = $m->map($f);
+//     $bindResult = $m->bind(fn($x) => Str::of($f($x)));
 
-    expect($mapResult->extract())->toBe($bindResult->extract());
+//     expect($mapResult->extract())->toBe($bindResult->extract());
+// });
+
+it("trims correctly", function () {
+
+    $original = Str::of("   hello world   ");
+    $trimmed  = $original->trim();
+
+    // returns correct type
+    expect($trimmed)->toBeInstanceOf(Str::class);
+
+    // trims whitespace
+    expect($trimmed->get())->toBe("hello world");
+
+    // does not mutate original
+    expect($original->get())->toBe("   hello world   ");
+});
+
+it("returns empty string when trimming only whitespace", function () {
+
+    $str = Str::of("     ");
+    $trimmed = $str->trim();
+
+    expect($trimmed->get())->toBe("");
+});
+
+it("does nothing if no whitespace exists", function () {
+
+    $str = Str::of("hello");
+    $trimmed = $str->trim();
+
+    expect($trimmed->get())->toBe("hello");
+});
+
+it("trims specific characters", function () {
+
+    $str = Str::of("--hello--");
+    $trimmed = $str->trim("-");
+
+    expect($trimmed->get())->toBe("hello");
 });

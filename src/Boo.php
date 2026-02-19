@@ -3,6 +3,8 @@
 namespace lray138\G2;
 
 use FunctionalPHP\FantasyLand\{Monoid, Semigroup};
+use FunctionalPHP\FantasyLand\Functor;
+use FunctionalPHP\FantasyLand\Pointed;
 use lray138\G2\Either;
 
 class Boo implements Monoid
@@ -65,21 +67,34 @@ class Boo implements Monoid
         return new self($value, $operation);
     }
 
+    // public function concat(Semigroup $other): Semigroup
+    // {
+    //     if (!$other instanceof self) {
+    //         return Either::left('Arr::class concat expects Str');
+    //     }
+
+    //     // Perform the combination based on the operation
+    //     switch ($this->operation) {
+    //         case "and":
+    //             return new self($this->extract() && $other->extract(), "and");
+    //         case "or":
+    //             return new self($this->extract() || $other->extract(), "or");
+    //         default:
+    //             throw new \LogicException("Invalid operation: {$this->operation}");
+    //     }
+    // }
+
     public function concat(Semigroup $other): Semigroup
     {
         if (!$other instanceof self) {
-            return Either::left('Arr::class concat expects Str');
+            throw new \InvalidArgumentException(self::class . '::concat expects ' . self::class);
         }
 
-        // Perform the combination based on the operation
-        switch ($this->operation) {
-            case "and":
-                return new self($this->extract() && $other->extract(), "and");
-            case "or":
-                return new self($this->extract() || $other->extract(), "or");
-            default:
-                throw new \LogicException("Invalid operation: {$this->operation}");
-        }
+        return match ($this->operation) {
+            'and' => new self($this->extract() && $other->extract(), 'and'),
+            'or'  => new self($this->extract() || $other->extract(), 'or'),
+            default => throw new \LogicException("Invalid operation: {$this->operation}")
+        };
     }
 
     public function map(callable $f): self
