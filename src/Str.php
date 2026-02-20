@@ -4,6 +4,7 @@ namespace lray138\G2;
 
 use FunctionalPHP\FantasyLand\{Monoid, Semigroup, Pointed};
 use lray138\G2\Either;
+use InvalidArgumentException;
 
 /**
  * String wrapper class implementing Monoid and Pointed interfaces.
@@ -45,14 +46,14 @@ class Str implements Monoid, Pointed
         return new static('');
     }
 
-    public function concat(Semigroup $s): Semigroup
-    {
-        if ($s instanceof self) {
-            return new static($this->extract() . $s->extract());
-        }
-
-        return Either::left('Str::class concat expets a Str');
+public function concat(Semigroup $value): Semigroup
+{
+    if (!$value instanceof self) {
+        throw new InvalidArgumentException('Str::concat expects a Str');
     }
+
+    return new static($this->extract() . $value->extract());
+}
 
     public function replace($search, $replace) {
 

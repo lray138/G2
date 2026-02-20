@@ -15,3 +15,6 @@ it('prepend correctly', function() {
         Str::of('b')->prepend('a')->get()
     )->toBe('ab');
 });
+
+require "Str/trim.php";
+require "Str/concat.php";
