@@ -18,16 +18,3 @@ it('mempty works', function () {
     expect(Num::sum()->extract())->toBe(0);
 });
 
-// it('has "magic" toString implemented', function() {
-    
-// });
-
-// it('concat works', function () {
-//     $s = Num::of(1)
-//         ->concat(Num::of(3));
-
-//     $s = Num::of(1, "mul")
-//         ->concat(Num::of(3, "mul"));
-
-//     expect($s->extract())->toBe(3);
-// });

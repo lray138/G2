@@ -2,90 +2,89 @@
 
 use lray138\G2\Str;
 use FunctionalPHP\FantasyLand\Semigroup;
-use InvalidArgumentException;
 
-it('concat combines two Str values', function () {
-    $a = Str::of('Hello');
-    $b = Str::of(' World');
 
-    $c = $a->concat($b);
+describe('Str::concat', function () {
+    it('combines two Str values', function () {
+        $a = Str::of('Hello');
+        $b = Str::of(' World');
 
-    expect($c)->toBeInstanceOf(Str::class)
-        ->and($c->extract())->toBe('Hello World');
-});
+        $c = $a->concat($b);
 
-it('concat does not mutate the original Str', function () {
-    $a = Str::of('Hello');
-    $b = Str::of(' World');
+        expect($c)->toBeInstanceOf(Str::class)
+            ->and($c->extract())->toBe('Hello World');
+    });
 
-    $a->concat($b);
+    it('does not mutate the original Str', function () {
+        $a = Str::of('Hello');
+        $b = Str::of(' World');
 
-    expect($a->extract())->toBe('Hello');
-});
+        $a->concat($b);
 
-it('concat throws when given a different Semigroup type', function () {
-    $a = Str::of('Hello');
+        expect($a->extract())->toBe('Hello');
+    });
 
-    $other = new class implements Semigroup {
-        public function concat(Semigroup $value): Semigroup
-        {
-            return $this;
+    it('throws when given a different Semigroup type', function () {
+        $a = Str::of('Hello');
+
+        $other = new cla`ss implements Semigroup {
+            public function concat(Semigroup $value): Semigroup
+            {
+                return $this;
+            }
+        };
+
+        expect(fn () => $a->concat($other))
+            ->toThrow(InvalidArgumentException::class, 'Str::concat expects a Str');
+    });
+})->group('str', 'concat');
+
+describe('Str algebra laws', function () {
+    // Semigroup law: associativity
+    it('satisfies associativity', function () {
+        $a = Str::of('Hello');
+        $b = Str::of(' ');
+        $c = Str::of('World');
+
+        $left  = $a->concat($b)->concat($c);     // (a <> b) <> c
+        $right = $a->concat($b->concat($c));     // a <> (b <> c)
+
+        expect($left->extract())->toBe($right->extract())
+            ->and($left->extract())->toBe('Hello World');
+    });
+
+    it('satisfies associativity across multiple samples', function () {
+        $cases = [
+            ['a', 'b', 'c'],
+            ['Hello', ' ', 'World'],
+            ['', 'x', ''],
+            ['🔥', '⚡', ''],
+        ];
+
+        foreach ($cases as [$x, $y, $z]) {
+            $a = Str::of($x);
+            $b = Str::of($y);
+            $c = Str::of($z);
+
+            $left  = $a->concat($b)->concat($c);
+            $right = $a->concat($b->concat($c));
+
+            expect($left->extract())->toBe($right->extract());
         }
-    };
+    });
 
-    expect(fn () => $a->concat($other))
-        ->toThrow(InvalidArgumentException::class, 'Str::concat expects a Str');
-});
+    // Monoid laws: identity (requires mempty)
+    it('satisfies right identity (a <> mempty = a)', function () {
+        $a = Str::of('Hello');
+        $e = Str::mempty();
 
-it('satisfies the Semigroup associativity law for Str', function () {
-    $a = Str::of('Hello');
-    $b = Str::of(' ');
-    $c = Str::of('World');
+        expect($a->concat($e)->extract())->toBe($a->extract());
+    });
 
-    // (a <> b) <> c
-    $left = $a->concat($b)->concat($c);
+    it('satisfies left identity (mempty <> a = a)', function () {
+        $a = Str::of('Hello');
+        $e = Str::mempty();
 
-    // a <> (b <> c)
-    $right = $a->concat($b->concat($c));
-
-    expect($left->extract())->toBe($right->extract())
-        ->and($left->extract())->toBe('Hello World');
-});
-
-it('satisfies associativity across multiple samples', function () {
-    $cases = [
-        ['a', 'b', 'c'],
-        ['Hello', ' ', 'World'],
-        ['', 'x', ''],
-        ['🔥', '⚡', ''],
-    ];
-
-    foreach ($cases as [$x, $y, $z]) {
-        $a = Str::of($x);
-        $b = Str::of($y);
-        $c = Str::of($z);
-
-        $left  = $a->concat($b)->concat($c);
-        $right = $a->concat($b->concat($c));
-
-        expect($left->extract())->toBe($right->extract());
-    }
-});
-
-it('satisfies the Monoid right identity law for Str', function () {
-    $a = Str::of('Hello');
-    $e = Str::mempty();
-
-    $right = $a->concat($e); // a <> e
-
-    expect($right->extract())->toBe($a->extract());
-});
-
-it('satisfies the Monoid left identity law for Str', function () {
-    $a = Str::of('Hello');
-    $e = Str::mempty();
-
-    $left = $e->concat($a); // e <> a
-
-    expect($left->extract())->toBe($a->extract());
-});
+        expect($e->concat($a)->extract())->toBe($a->extract());
+    });
+})->group('str', 'laws', 'algebra');

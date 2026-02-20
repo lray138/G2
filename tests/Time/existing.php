@@ -6,7 +6,6 @@ use lray138\G2\{
     Either\Left
 };
 
-
 describe('constructs properly', function () {
 
     it('constructs using pointed factory method', function () {
@@ -14,7 +13,6 @@ describe('constructs properly', function () {
         
         expect(Time::of('2024-10-03')->format('Y-m-d')->get())->toBe('2024-10-03');
 
-    
     });
 
 });

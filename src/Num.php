@@ -41,22 +41,36 @@ class Num implements Monoid, Pointed
         return new static($value, "add");
     }
 
-    public static function mempty($operation = null)
+    public static function mempty(string $operation = 'add'): self
     {
-        $operation = is_null($operation) ? "add" : $operation;
-        $value = $operation === "add" ? 0 : 1;
+        if ($operation !== 'add' && $operation !== 'multiply') {
+            throw new InvalidArgumentException(
+                "Num monoid must be 'add' or 'multiply'."
+            );
+        }
+
+        $value = $operation === 'add' ? 0 : 1;
+
         return new self($value, $operation);
     }
 
     public function concat(Semigroup $n): Semigroup
     {
-        if ($this->operation === 'add') {
-            return new self($this->value + $n->extract(), $this->operation);
-        } elseif ($this->operation === 'mul') {
-            return new self($this->value * $n->extract(), $this->operation);
+        // enforce same concrete type
+        if (!$n instanceof self) {
+            throw new \InvalidArgumentException('Num::concat expects a Num');
         }
 
-        return Left::of("Unknown operation");
+        // enforce same operation (otherwise associativity is not guaranteed)
+        if ($this->operation !== $n->operation) {
+            throw new \InvalidArgumentException('Num::concat expects same operation');
+        }
+
+        return match ($this->operation) {
+            'add' => new self($this->value + $n->value, 'add'),
+            'mul' => new self($this->value * $n->value, 'mul'),
+            default => throw new \InvalidArgumentException('Unknown operation'),
+        };
     }
 
     // ───────────────────────────────
@@ -139,9 +153,20 @@ class Num implements Monoid, Pointed
     {
         return Boo::of($this->value % 2 === 0);
     }
+
+    public function isEvenRaw(): bool
+    {
+        return ($this->value % 2 === 0);
+    }
+
     public function isOdd(): Boo
     {
         return Boo::of($this->value % 2 !== 0);
+    }
+
+    public function isOddRaw(): bool
+    {
+        return $this->value % 2 !== 0;
     }
 
     public function clamp($min, $max): self
@@ -155,6 +180,7 @@ class Num implements Monoid, Pointed
     }
 
     // Conversion
+    // not sure about these two.
     public function toFloat(): self
     {
         return new self((float) $this->value);
