@@ -11,7 +11,7 @@ use function lray138\G2\{
     unwrap
 };
 
-use lray138\G2\{Either, Maybe};
+use lray138\G2\{Either, Maybe, Result};
 
 trait GetPropTrait
 {
@@ -36,11 +36,68 @@ trait GetPropTrait
         $stored = unwrap($this->extract());
         $key = unwrap($key);
 
-        if (!isset($stored[$key])) {
+        if (is_string($key) && $this->isPathLike($key)) {
+            return $this->pathProp($stored, $key);
+        }
+
+        if (!is_array($stored) || !array_key_exists($key, $stored)) {
             return Nil::unit();
         }
 
         return wrap($stored[$key]);
+    }
+
+    public function tryProp($key): Result
+    {
+        $value = $this->prop($key);
+        $unwrappedKey = unwrap($key);
+        $isPath = is_string($unwrappedKey) && $this->isPathLike($unwrappedKey);
+        $notFound = $isPath
+            ? "path '$unwrappedKey' not found"
+            : "prop '$unwrappedKey' not found";
+
+        return $value instanceof Nil
+            ? Result::err($notFound)
+            : Result::ok($value);
+    }
+
+    private function pathProp($stored, string $path)
+    {
+        $parts = $this->splitPath($path);
+        $current = $stored;
+
+        foreach ($parts as $part) {
+            $current = unwrap($current);
+            if (!is_array($current) || !array_key_exists($part, $current)) {
+                return Nil::unit();
+            }
+            $current = $current[$part];
+        }
+
+        return wrap($current);
+    }
+
+    private function isPathLike(string $key): bool
+    {
+        return str_contains($key, '/')
+            || str_contains($key, '.')
+            || str_contains($key, '[');
+    }
+
+    private function splitPath(string $path): array
+    {
+        $parts = preg_split('/[\/.]+/', trim($path));
+        $parts = array_values(array_filter($parts, fn($part) => $part !== ''));
+
+        $segments = [];
+        foreach ($parts as $part) {
+            preg_match_all('/([^\[\]]+)|\[(\d+)\]/', $part, $matches, PREG_SET_ORDER);
+            foreach ($matches as $match) {
+                $segments[] = $match[1] !== '' ? $match[1] : $match[2];
+            }
+        }
+
+        return $segments;
     }
 
     public function maybeProp($key): Maybe

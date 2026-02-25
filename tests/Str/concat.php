@@ -27,7 +27,7 @@ describe('Str::concat', function () {
     it('throws when given a different Semigroup type', function () {
         $a = Str::of('Hello');
 
-        $other = new cla`ss implements Semigroup {
+        $other = new class implements Semigroup {
             public function concat(Semigroup $value): Semigroup
             {
                 return $this;
