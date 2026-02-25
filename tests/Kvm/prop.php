@@ -94,4 +94,3 @@ it('returns nested list/object path values with bracket indexes', function() {
     expect($kvm->prop('cols[1].attrs.title'))->toBeInstanceOf(Str::class);
     expect($kvm->prop('cols[1].attrs.title')->get())->toBe('second title');
 });
-
